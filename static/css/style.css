@@ -5,3 +5,8 @@ h1{
     color: blue;
     font-size: 40px;
 }
+
+body{
+    background-image: url('../img/shiphouse.jpg');
+    background-size: cover;
+}

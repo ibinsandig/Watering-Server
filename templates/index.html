@@ -7,10 +7,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <script></script>
-    <h1>/ ich bin index</h1>
+    <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <h1>Hallo Willkommen auf der Bewässerungssterung</h1>
     <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>   
     <p id="imp" class="imp-class"></p>    
-    <button onclick="IchbineineFunktion()">ich bin ein button</button>
+    <button onclick="ZurInfo()">Weiter zur Info</button>
+    <button onclick="ZumBedienpanel()">Weiter zum Bedienpanel</button>
 </body>
 </html>
