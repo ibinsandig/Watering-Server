@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, request, jsonify
 main_routes = Blueprint('main_routes', __name__, url_prefix='/')
 
+received_data = []  # Store received MQTT messages
+
 @main_routes.route('/')
 def index():
     return render_template('index.html')
@@ -8,6 +10,11 @@ def index():
 @main_routes.route('/info')
 def test():
     return render_template('info.html')
+
 @main_routes.route('/control')
 def control():
     return render_template('control.html')
+
+@main_routes.route('/get_mqtt_data')
+def get_mqtt_data():
+    return jsonify({'data': received_data})

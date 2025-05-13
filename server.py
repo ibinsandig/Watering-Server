@@ -1,42 +1,36 @@
-from flask import Flask, request, jsonify
+from flask import Flask
 from routes.main import main_routes
 import time
-# import paho.mqtt.client as mqtt
-import flask_mqtt as Mqtt
-
-
-app = Flask(__name__, static_url_path='/static')
-app.register_blueprint(main_routes)
-
-from flask import Flask, request, jsonify
-from flask_mqtt import Mqtt
-from routes.main import main_routes
+import paho.mqtt.client as mqtt
+from flask_socketio import SocketIO
 
 app = Flask(__name__, static_url_path='/static')
 app.register_blueprint(main_routes)
+socketio = SocketIO(app)
 
-# MQTT Konfiguration
-app.config['MQTT_BROKER_URL'] = 'test.mosquitto.org'  
-app.config['MQTT_BROKER_PORT'] = 1883
-app.config['MQTT_USERNAME'] = ''
-app.config['MQTT_PASSWORD'] = ''
-app.config['MQTT_KEEPALIVE'] = 60
-app.config['MQTT_TLS_ENABLED'] = False
+MQTT_BROKER = 'localhost'
+MQTT_PORT = 1883
+MQTT_TOPIC_SUB = 'watering/status'
+MQTT_TOPIC_PUB = 'watering/control'
 
-mqtt = Mqtt(app)
+# MQTT Callback functions
+def on_connect(client, userdata, flags, rc):
+    print(f"Connected to MQTT Broker with result code {rc}")
+    client.subscribe(MQTT_TOPIC_SUB)
 
-# Beispiel-Callback
-@mqtt.on_message()
-def handle_mqtt_message(client, userdata, message):
-    print(f"MQTT-Nachricht erhalten: {message.topic} – {message.payload.decode()}")
+def on_message(client, userdata, msg):
+    print(f"Received message: {msg.payload.decode()} on topic {msg.topic}")
+    # Emit the received data to all connected web clients
+    socketio.emit('mqtt_message', {'topic': msg.topic, 'payload': msg.payload.decode()})
 
-@app.route('/')
-def index():
-    return 'Server läuft'
+# Set up MQTT client
+mqtt_client = mqtt.Client()
+mqtt_client.on_connect = on_connect
+mqtt_client.on_message = on_message
+
+# Connect to MQTT broker
+mqtt_client.connect(MQTT_BROKER, MQTT_PORT, 60)
+mqtt_client.loop_start()
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=3000, threaded=True)
-
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=3000, threaded=True)
+    socketio.run(app, debug=True, host='0.0.0.0', port=3000)

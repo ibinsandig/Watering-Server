@@ -1,0 +1,8 @@
+Mosquitto Config:
+
+    listener 1883
+    allow_anonymous true
+
+    listener 9001
+    protocol websockets
+
