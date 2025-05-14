@@ -23,7 +23,7 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     print(f"Received message: {msg.payload.decode()} on topic {msg.topic}")
     # Emit the received data to all connected web clients
-    #   socketio.emit('mqtt_message', {'topic': msg.topic, 'payload': msg.payload.decode()})
+    socketio.emit('mqtt_message', {'topic': msg.topic, 'payload': msg.payload.decode()})
 
 # Set up MQTT client
 
