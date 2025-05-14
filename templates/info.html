@@ -12,8 +12,9 @@
     <script>
         var socket = io();
         var messagesDiv = document.getElementById('messages');
-
+        console.log("Connecting to socket...");
         socket.on('mqtt_message', function(data) {
+            console.log("Received message:", data);
             var message = document.createElement('p');
             message.textContent = `Topic: ${data.topic}, Message: ${data.payload}`;
             messagesDiv.appendChild(message);
