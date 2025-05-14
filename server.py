@@ -36,7 +36,7 @@ def connect_mqtt():
     mqtt_client.connect(MQTT_BROKER, MQTT_PORT, 60)
     mqtt_client.loop_start()            
 
-# threading.Thread(target=connect_mqtt).start()
+threading.Thread(target=connect_mqtt).start()
  
 if __name__ == '__main__':
     socketio.run(app, debug=True, host='0.0.0.0', port=3000)
