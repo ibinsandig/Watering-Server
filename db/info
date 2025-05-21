@@ -1,7 +1,9 @@
-database: flask_server
-table: wetness
-user: sflask
-pwd: 12345678
+MariaDB:
+
+    database: flask_server
+    table: wetness
+    user: sflask
+    pwd: 12345678
 
 
 

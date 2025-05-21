@@ -1,0 +1,35 @@
+MariaDB [flask_server]> select * from wetness
+    -> ;
++----+-----------------+---------+---------------------+
+| id | topic           | payload | timestamp           |
++----+-----------------+---------+---------------------+
+|  1 | watering/status | 1       | 2025-05-21 20:22:33 |
+|  2 | watering/status | 1       | 2025-05-21 20:22:33 |
+|  3 | watering/status | 1       | 2025-05-21 20:22:39 |
+|  4 | watering/status | 1       | 2025-05-21 20:22:39 |
+|  5 | watering/status | 1       | 2025-05-21 20:22:41 |
+|  6 | watering/status | 1       | 2025-05-21 20:22:41 |
+|  7 | watering/status | 1       | 2025-05-21 20:22:41 |
+|  8 | watering/status | 1       | 2025-05-21 20:22:41 |
+|  9 | watering/status | 1       | 2025-05-21 20:22:42 |
+| 10 | watering/status | 1       | 2025-05-21 20:22:42 |
+| 11 | watering/status | 1       | 2025-05-21 20:22:42 |
+| 12 | watering/status | 1       | 2025-05-21 20:22:42 |
+| 13 | watering/status | 1       | 2025-05-21 20:22:43 |
+| 14 | watering/status | 1       | 2025-05-21 20:22:43 |
+| 15 | watering/status | 0       | 2025-05-21 20:27:44 |
+| 16 | watering/status | 0       | 2025-05-21 20:27:44 |
+| 17 | watering/status | 0       | 2025-05-21 20:27:45 |
+| 18 | watering/status | 0       | 2025-05-21 20:27:45 |
+| 19 | watering/status | 0       | 2025-05-21 20:27:46 |
+| 20 | watering/status | 0       | 2025-05-21 20:27:46 |
+| 21 | watering/status | 0       | 2025-05-21 20:27:46 |
+| 22 | watering/status | 0       | 2025-05-21 20:27:46 |
+| 23 | watering/status | 1       | 2025-05-21 20:27:48 |
+| 24 | watering/status | 1       | 2025-05-21 20:27:48 |
+| 25 | watering/status | 1       | 2025-05-21 20:27:49 |
+| 26 | watering/status | 1       | 2025-05-21 20:27:49 |
+| 27 | watering/status | 1       | 2025-05-21 20:27:50 |
+| 28 | watering/status | 1       | 2025-05-21 20:27:50 |
++----+-----------------+---------+---------------------+
+28 rows in set (0.003 sec)
