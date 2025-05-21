@@ -6,10 +6,9 @@ def insert_data_flaskiot(topic, payload):
         user='sflask',
         password='12345678',
         database='flask_server'
-        table='wetness'
     )
     cursor = conn.cursor()
-    sql = "INSERT INTO {table} (topic, payload) VALUES (%s, %s)"
+    sql = "INSERT INTO wetness (topic, payload) VALUES (%s, %s)"
     cursor.execute(sql, (topic, payload))
     conn.commit()
     cursor.close()
