@@ -15,6 +15,10 @@ def test():
 def control():
     return render_template('control.html')
 
+@main_routes.route('/watering')
+def watering():
+    return render_template('watering.html')
+
 @main_routes.route('/get_mqtt_data')
 def get_mqtt_data():
     return jsonify({'data': received_data})
