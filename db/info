@@ -1,0 +1,109 @@
+database: flask_server
+table: wetness
+user: sflask
+pwd: 12345678
+
+
+
+
+1. Datenbank-Befehle
+    sql
+    Kopieren
+    Bearbeiten
+    SHOW DATABASES;                     -- Alle Datenbanken anzeigen
+    CREATE DATABASE meine_db;           -- Neue Datenbank erstellen
+    DROP DATABASE meine_db;             -- Datenbank löschen
+    USE meine_db;                       -- In eine Datenbank wechseln
+
+📋 2. Tabellen-Befehle
+    sql
+    Kopieren
+    Bearbeiten
+    SHOW TABLES;                        -- Tabellen in aktueller DB anzeigen
+    CREATE TABLE tabelle (...);         -- Neue Tabelle anlegen
+    DROP TABLE tabelle;                 -- Tabelle löschen
+    DESCRIBE tabelle;                   -- Struktur einer Tabelle anzeigen
+    SHOW COLUMNS FROM tabelle;          -- Alternative zu DESCRIBE
+    ALTER TABLE tabelle ...;            -- Tabelle verändern (Spalten hinzufügen, ändern, löschen)
+
+📄 3. Datenmanipulation (DML – Data Manipulation Language)
+    sql
+    Kopieren
+    Bearbeiten
+    SELECT * FROM tabelle;              -- Daten lesen
+    INSERT INTO tabelle (...) VALUES (...);   -- Neue Daten einfügen
+    UPDATE tabelle SET spalte = ... WHERE ...; -- Daten ändern
+    DELETE FROM tabelle WHERE ...;      -- Daten löschen
+
+🔐 4. Benutzerverwaltung & Rechte (DCL – Data Control Language)
+    sql
+    Kopieren
+    Bearbeiten
+    CREATE USER 'user'@'host' IDENTIFIED BY 'passwort';   -- Benutzer erstellen
+    DROP USER 'user'@'host';                               -- Benutzer löschen
+    GRANT ALL PRIVILEGES ON db.* TO 'user'@'host';         -- Rechte vergeben
+    REVOKE ALL PRIVILEGES ON db.* FROM 'user'@'host';      -- Rechte entziehen
+    SHOW GRANTS FOR 'user'@'host';                         -- Benutzerrechte anzeigen
+    FLUSH PRIVILEGES;                                      -- Rechte neu laden
+
+🔄 5. Transaktionen (ACID-Konformität)
+    sql
+    Kopieren
+    Bearbeiten
+    START TRANSACTION;     -- Transaktion beginnen
+    COMMIT;                -- Änderungen speichern
+    ROLLBACK;              -- Änderungen zurücknehmen
+
+🧪 6. Diagnose- und Systemabfragen
+    sql
+    Kopieren
+    Bearbeiten
+    STATUS;                      -- Systemstatus
+    SHOW PROCESSLIST;            -- Aktive Verbindungen
+    SHOW VARIABLES;              -- Systemvariablen
+    SHOW ENGINES;                -- Verfügbare Speicher-Engines
+    SHOW WARNINGS;               -- Letzte Warnungen anzeigen
+    SHOW ERRORS;                 -- Letzte Fehler anzeigen
+
+📦 7. Indexe & Schlüssel
+    sql
+    Kopieren
+    Bearbeiten
+    CREATE INDEX idx_name ON tabelle(spalte);
+    DROP INDEX idx_name ON tabelle;
+    SHOW INDEX FROM tabelle;
+
+🔧 8. Views, Stored Procedures, Triggers
+    sql
+    Kopieren
+    Bearbeiten
+    CREATE VIEW ansicht AS SELECT ...;
+    DROP VIEW ansicht;
+
+    CREATE PROCEDURE prozedur_name(...) BEGIN ... END;
+    CALL prozedur_name(...);
+
+    CREATE TRIGGER trigger_name BEFORE INSERT ON tabelle FOR EACH ROW BEGIN ... END;
+
+🧰 9. Export/Import über Kommandozeile (außerhalb SQL)
+    bash
+    Kopieren
+    Bearbeiten
+    mysqldump -u root -p datenbank > backup.sql     # Export
+    mysql -u root -p datenbank < backup.sql         # Import
+
+📃 10. Weitere nützliche SQL-Kommandos
+    sql
+    Kopieren
+    Bearbeiten
+    SHOW TABLE STATUS;                  -- Info über Tabellen inkl. Größe
+    SELECT VERSION();                   -- MariaDB-Version anzeigen
+    SELECT NOW();                       -- Aktuelles Datum/Uhrzeit
+
+🧭 Hilfe im Client erhalten
+    sql
+    Kopieren
+    Bearbeiten
+    HELP;                      -- Zeigt allgemeine Hilfe
+    HELP SELECT;               -- Hilfe zu einem bestimmten Befehl
+    \h oder \?                 -- Client-Befehle anzeigen
