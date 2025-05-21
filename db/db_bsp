@@ -1,5 +1,4 @@
-MariaDB [flask_server]> select * from wetness
-    -> ;
+MariaDB [flask_server]> select * from wetness;
 +----+-----------------+---------+---------------------+
 | id | topic           | payload | timestamp           |
 +----+-----------------+---------+---------------------+
@@ -31,5 +30,11 @@ MariaDB [flask_server]> select * from wetness
 | 26 | watering/status | 1       | 2025-05-21 20:27:49 |
 | 27 | watering/status | 1       | 2025-05-21 20:27:50 |
 | 28 | watering/status | 1       | 2025-05-21 20:27:50 |
+| 29 | watering/status | 1000    | 2025-05-21 21:13:51 |
+| 30 | watering/status | 1000    | 2025-05-21 21:13:51 |
+| 31 | watering/status | 100     | 2025-05-21 21:13:57 |
+| 32 | watering/status | 100     | 2025-05-21 21:13:57 |
+| 33 | watering/status | 500     | 2025-05-21 21:14:04 |
+| 34 | watering/status | 500     | 2025-05-21 21:14:04 |
 +----+-----------------+---------+---------------------+
-28 rows in set (0.003 sec)
+34 rows in set (0.005 sec)
