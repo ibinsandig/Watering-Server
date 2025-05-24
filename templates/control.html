@@ -3,12 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control</title>
+    <title>Document</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
+</head>  
+    <title>Automatische Bewässerung</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <body>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-    <h1>Bedienpanel</h1>
-    <button onclick="ZurMainpage()">Zurück zur Startpage</button>
+    <div class="container">
+        <h1>Bewässerungssteuerung</h1>
+        
+        <div class="sensor-data">
+            <h2>Bodenfeuchtigkeit: <span id="moisture">--</span>%</h2>
+            <h2>Pumpenstatus: <span id="pump-status">AUS</span></h2>
+        </div>
+
+        <div class="controls">
+            <button onclick="controlPump(true)">Pumpe Starten</button>
+            <button onclick="controlPump(false)">Pumpe Stoppen</button>
+        </div>
+    </div>
+    <button onclick="ZurMainpage()">Zurück zur Startseite</button>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
