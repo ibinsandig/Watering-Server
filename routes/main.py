@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify
 import mysql.connector
+import paho.mqtt.publish as publish
+
 main_routes = Blueprint('main_routes', __name__, url_prefix='/')
 
 received_data = []  # Store received MQTT messages
@@ -20,10 +22,33 @@ def control():
 def watering():
     return render_template('watering.html')
 
+# mqtt data send
+
+@main_routes.route('/api/pump-control', methods=['POST'])
+def pump_control():
+    data = request.get_json()
+    action = data.get('action')
+
+    if action not in ['on', 'off']:
+        return jsonify({'status': 'error', 'message': 'Ungültige Aktion'}), 400
+
+    # ⬇️ Hier kannst du MQTT oder GPIO aufrufen
+    print(f"Pumpe soll geschaltet werden: {action}")  # Zum Debuggen
+
+    # Beispiel MQTT (nur wenn du publish brauchst):
+    # import paho.mqtt.publish as publish
+    publish.single("watering/control", action, hostname="localhost")  # ggf. IP anpassen
+
+    return jsonify({'status': 'success', 'action': action})
+
+#mqtt data grab
+
 @main_routes.route('/get_mqtt_data')
 def get_mqtt_data():
     return jsonify({'data': received_data})
 
+
+# database data
 @main_routes.route('/api/latest-data')
 def latest_data():
     conn = mysql.connector.connect(
@@ -42,3 +67,4 @@ def latest_data():
         return jsonify(result)
     else:
         return jsonify({"topic": "", "payload": "", "timestamp": ""})
+

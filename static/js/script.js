@@ -10,6 +10,25 @@ function ZurInfo(){
     window.location.href = "/info";
 }
 
+function controlPump(turnOn) {
+    const action = turnOn ? 'on' : 'off';
+
+    fetch('/api/pump-control', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ action: action })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Pumpenstatus aktualisiert:", data);
+    })
+    .catch(error => {
+        console.error("Fehler beim Steuern der Pumpe:", error);
+    });
+}
+
 function fetchLatestData() {
     fetch('/api/latest-data')
         .then(response => response.json())
@@ -36,5 +55,4 @@ function fetchLatestData() {
         });
 }
 
-// Rufe es alle 3 Sekunden auf
 setInterval(fetchLatestData, 3000);
