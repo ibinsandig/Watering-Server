@@ -109,3 +109,106 @@ MariaDB:
     HELP;                      -- Zeigt allgemeine Hilfe
     HELP SELECT;               -- Hilfe zu einem bestimmten Befehl
     \h oder \?                 -- Client-Befehle anzeigen
+
+
+Installation
+1. ✅ MariaDB auf dem Raspberry Pi installieren
+bash
+Kopieren
+Bearbeiten
+sudo apt update
+sudo apt install mariadb-server
+Nach der Installation absichern:
+
+bash
+Kopieren
+Bearbeiten
+sudo mysql_secure_installation
+➡️ Fragen beantworten: Root-Passwort setzen, anonyme Nutzer löschen, etc.
+
+2. 🛠️ Datenbank und Tabelle anlegen
+Starte die Datenbank-Konsole:
+
+bash
+Kopieren
+Bearbeiten
+sudo mariadb
+Dann:
+
+sql
+Kopieren
+Bearbeiten
+CREATE DATABASE flaskiot;
+
+USE flaskiot;
+
+CREATE TABLE sensor_data (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    topic VARCHAR(255),
+    payload TEXT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+3. 📦 Python-Client installieren
+Installiere z. B. mysql-connector-python:
+
+bash
+Kopieren
+Bearbeiten
+pip install mysql-connector-python
+4. 📄 Verbindung zu MariaDB in Python
+Erstelle z. B. eine Datei db.py:
+
+python
+Kopieren
+Bearbeiten
+import mysql.connector
+
+def insert_data(topic, payload):
+    conn = mysql.connector.connect(
+        host='localhost',
+        user='deinuser',
+        password='deinpasswort',
+        database='flaskiot'
+    )
+    cursor = conn.cursor()
+    sql = "INSERT INTO sensor_data (topic, payload) VALUES (%s, %s)"
+    cursor.execute(sql, (topic, payload))
+    conn.commit()
+    cursor.close()
+    conn.close()
+5. 🔌 Integration in on_message
+In deiner bestehenden on_message-Funktion:
+
+python
+Kopieren
+Bearbeiten
+from db import insert_data  # Neue Zeile
+
+def on_message(client, userdata, msg):
+    payload = msg.payload.decode()
+    print(f"Received message: {payload} on topic {msg.topic}")
+    
+    # ✅ Save to DB
+    insert_data(msg.topic, payload)
+    
+    # ✅ Send to clients via SocketIO
+    socketio.emit('mqtt_message', {'topic': msg.topic, 'payload': payload})
+🧠 Zusammenfassung – So funktioniert’s:
+Der ESP8266 sendet via MQTT z. B. {"moisture": 30} an den Broker.
+
+Dein Flask-Server empfängt es über on_message.
+
+Die Daten werden:
+
+an die Webclients gesendet (SocketIO)
+
+in die MariaDB-Tabelle sensor_data gespeichert
+
+🔐 Sicherheit & Performance
+Verwende einen eigenen DB-Benutzer mit eingeschränkten Rechten.
+
+Bei vielen Zugriffen: Verbindungspool statt dauernd neue Verbindungen.
+
+Sanitize Input (prepared statements wie oben sind schon sicher).
+
+Möchtest du auch eine Webseite, die die gespeicherten Werte anzeigt (z. B. letzte 10 Messungen)? Sag Bescheid, dann zeig ich dir auch, wie du SQL-Daten mit Flask renderst.
