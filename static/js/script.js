@@ -1,5 +1,5 @@
-console.log("Hello from script.js");
-document.getElementById("imp").textContent = "Hello from script.js";
+console.log("Laden script.js");
+
 function ZumBedienpanel(){
     window.location.href = "/control";
 }
