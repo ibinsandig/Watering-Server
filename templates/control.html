@@ -1,17 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>  
     <title>Automatische Bewässerung</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
+</head>
 <body>
     <div class="container">
         <h1>Bewässerungssteuerung</h1>
-        
+
         <div class="sensor-data">
             <h2>Bodenfeuchtigkeit: <span id="moisture">--</span>%</h2>
             <h2>Pumpenstatus: <span id="pump-status">AUS</span></h2>
@@ -21,9 +20,11 @@
             <button onclick="controlPump(true)">Pumpe Starten</button>
             <button onclick="controlPump(false)">Pumpe Stoppen</button>
         </div>
-    </div>
-    <button onclick="ZurMainpage()">Zurück zur Startseite</button>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+        <div class="navigation">
+            <button onclick="ZurMainpage()">Zurück zur Startseite</button>
+            <button onclick="ZurInfo()">Zur Info-Seite</button>
+        </div>
+    </div>
 </body>
 </html>
