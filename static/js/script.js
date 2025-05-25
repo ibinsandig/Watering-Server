@@ -43,14 +43,19 @@ function fetchLatestData() {
                 parts.forEach(p => {
                     // Unterstützung für verschiedene Moisture-Typen
                     if (p.startsWith('moisture:') || p.startsWith('moistureA:')) {
-                        moisture = p.split(':')[1];
+                        moistureA = p.split(':')[1];
+                    }
+                    if (p.startsWith('moistureD:')) {
+                        moistureD = p.split(':')[1];
                     }
                     if (p.startsWith('pump:')) {
                         pump = p.split(':')[1] === 'on' ? 'EIN' : 'AUS';
                     }
+                    
                 });
 
-                document.getElementById("moisture").textContent = moisture;
+                document.getElementById("moistureA").textContent = moistureA;
+                document.getElementById("moistureD").textContent = moistureD;
                 document.getElementById("pump-status").textContent = pump;
             }
         })
