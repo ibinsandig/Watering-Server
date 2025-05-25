@@ -93,5 +93,5 @@ document.addEventListener('DOMContentLoaded', function() {
 setInterval(refreshPlotA, 11000);
 setInterval(refreshPlotD, 10000);
 
-// 3 Sekunden Aktualisierung für aktuelle Daten
-setInterval(fetchLatestData, 3000);
+// 0,5 Sekunden Aktualisierung für aktuelle Daten
+setInterval(fetchLatestData, 500);
