@@ -55,4 +55,14 @@ function fetchLatestData() {
         });
 }
 
+function refreshPlot() {
+    const plotImg = document.getElementById("moisture-plot");
+    const timestamp = new Date().getTime();  // Cache-Busting
+    plotImg.src = `/moisture-plot?t=${timestamp}`;
+}
+
+// 3,1 Sekunden Aktualisierung
+setInterval(refreshPlot, 3100);
+
+// 3 Sekunden Aktualisierung
 setInterval(fetchLatestData, 3000);
