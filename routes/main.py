@@ -2,6 +2,8 @@ from flask import send_file, Blueprint, render_template, request, jsonify
 import mysql.connector
 import paho.mqtt.publish as publish
 import io
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import pandas as pd
 
