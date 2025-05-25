@@ -55,14 +55,22 @@ function fetchLatestData() {
         });
 }
 
-function refreshPlot() {
-    const plotImg = document.getElementById("moisture-plot");
-    const timestamp = new Date().getTime();  // Cache-Busting
-    plotImg.src = `/moisture-plot?t=${timestamp}`;
+function refreshPlotA() {
+    const plotImg = document.getElementById("moistureA-plot");
+    const timestamp = new Date().getTime();  
+    plotImg.src = `/moistureA-plot?t=${timestamp}`;
+}
+
+function refreshPlotD() {
+    const plotImg = document.getElementById("moistureD-plot");
+    const timestamp = new Date().getTime();  
+    plotImg.src = `/moistureD-plot?t=${timestamp}`;
+
 }
 
 // 3,1 Sekunden Aktualisierung
-setInterval(refreshPlot, 3100);
+setInterval(refreshPlotA, 3100);
+setInterval(refreshPlotD, 3100);
 
 // 3 Sekunden Aktualisierung
 setInterval(fetchLatestData, 3000);

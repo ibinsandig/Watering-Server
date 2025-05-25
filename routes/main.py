@@ -35,12 +35,9 @@ def pump_control():
     if action not in ['on', 'off']:
         return jsonify({'status': 'error', 'message': 'Ungültige Aktion'}), 400
 
-    # ⬇️ Hier kannst du MQTT oder GPIO aufrufen
-    print(f"Pumpe soll geschaltet werden: {action}")  # Zum Debuggen
+    print(f"Pumpe soll geschaltet werden: {action}")  
 
-    # Beispiel MQTT (nur wenn du publish brauchst):
-    # import paho.mqtt.publish as publish
-    publish.single("watering/control", action, hostname="localhost")  # ggf. IP anpassen
+    publish.single("watering/control", action, hostname="localhost")  
 
     return jsonify({'status': 'success', 'action': action})
 
@@ -71,9 +68,10 @@ def latest_data():
     else:
         return jsonify({"topic": "", "payload": "", "timestamp": ""})
 
-@main_routes.route('/moisture-plot')
-def moisture_plot():
-    # Verbindung zur DB
+@main_routes.route('/moistureD-plot')
+def moistureD_plot():
+
+    # Verbindung zu flask_server db
     conn = mysql.connector.connect(
         host='localhost',
         user='sflask',
@@ -100,21 +98,77 @@ def moisture_plot():
         try:
             parts = payload.split(',')
             for p in parts:
-                if p.startswith('moisture:'):
+                if p.startswith('moistureD:'):
                     value = int(p.split(':')[1])
                     data.append(value)
                     timestamps.append(timestamp)
         except:
             continue
 
-    df = pd.DataFrame({'timestamp': timestamps, 'moisture': data})
+    df = pd.DataFrame({'timestamp': timestamps, 'moistureD': data})
 
     # Matplotlib-Plot erzeugen
     fig, ax = plt.subplots(figsize=(10, 5))
-    ax.plot(df['timestamp'], df['moisture'], color='blue', marker='o')
-    ax.set_title("Letzte 300 Moisture-Werte")
+    ax.plot(df['timestamp'], df['moistureD'], color='blue', marker='o')
+    ax.set_title("Letzte 300 digitale Moisture-Werte")
     ax.set_xlabel("Zeit")
-    ax.set_ylabel("Feuchtigkeit (%)")
+    ax.set_ylabel("Feuchtigkeit B (%)")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+
+    # Bild im Speicher speichern
+    img = io.BytesIO()
+    plt.savefig(img, format='png')
+    plt.close(fig)
+    img.seek(0)
+
+    return send_file(img, mimetype='image/png')
+
+@main_routes.route('/moistureA-plot')
+def moisture_plot():
+
+    # Verbindung zu flask_server db
+    conn = mysql.connector.connect(
+        host='localhost',
+        user='sflask',
+        password='12345678',
+        database='flask_server'
+    )
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT payload, timestamp 
+        FROM wetness 
+        WHERE topic = 'watering/status' 
+        ORDER BY id DESC 
+        LIMIT 300
+    """)
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    data = []
+    timestamps = []
+
+    for payload, timestamp in reversed(rows):
+        try:
+            parts = payload.split(',')
+            for p in parts:
+                if p.startswith('moistureA:'):
+                    value = int(p.split(':')[1])
+                    data.append(value)
+                    timestamps.append(timestamp)
+        except:
+            continue
+
+    df = pd.DataFrame({'timestamp': timestamps, 'moistureA': data})
+
+    # Matplotlib-Plot erzeugen
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.plot(df['timestamp'], df['moistureA'], color='blue', marker='o')
+    ax.set_title("Letzte 300 analogen Moisture-Werte")
+    ax.set_xlabel("Zeit")
+    ax.set_ylabel("Feuchtigkeit A (%)")
     plt.xticks(rotation=45)
     plt.tight_layout()
 
