@@ -1,6 +1,9 @@
-from flask import Blueprint, render_template, request, jsonify
+from flask import send_file, Blueprint, render_template, request, jsonify
 import mysql.connector
 import paho.mqtt.publish as publish
+import io
+import matplotlib.pyplot as plt
+import pandas as pd
 
 main_routes = Blueprint('main_routes', __name__, url_prefix='/')
 
@@ -68,3 +71,57 @@ def latest_data():
     else:
         return jsonify({"topic": "", "payload": "", "timestamp": ""})
 
+@main_routes.route('/moisture-plot')
+def moisture_plot():
+    # Verbindung zur DB
+    conn = mysql.connector.connect(
+        host='localhost',
+        user='sflask',
+        password='12345678',
+        database='flask_server'
+    )
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT payload, timestamp 
+        FROM wetness 
+        WHERE topic = 'watering/status' 
+        ORDER BY id DESC 
+        LIMIT 300
+    """)
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    data = []
+    timestamps = []
+
+    for payload, timestamp in reversed(rows):
+        try:
+            parts = payload.split(',')
+            for p in parts:
+                if p.startswith('moisture:'):
+                    value = int(p.split(':')[1])
+                    data.append(value)
+                    timestamps.append(timestamp)
+        except:
+            continue
+
+    df = pd.DataFrame({'timestamp': timestamps, 'moisture': data})
+
+    # Matplotlib-Plot erzeugen
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.plot(df['timestamp'], df['moisture'], color='blue', marker='o')
+    ax.set_title("Letzte 300 Moisture-Werte")
+    ax.set_xlabel("Zeit")
+    ax.set_ylabel("Feuchtigkeit (%)")
+    plt.xticks(rotation=45)
+    plt.tight_layout()
+
+    # Bild im Speicher speichern
+    img = io.BytesIO()
+    plt.savefig(img, format='png')
+    plt.close(fig)
+    img.seek(0)
+
+    return send_file(img, mimetype='image/png')
