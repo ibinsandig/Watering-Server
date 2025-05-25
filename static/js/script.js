@@ -69,8 +69,8 @@ function refreshPlotD() {
 }
 
 // 3,1 Sekunden Aktualisierung
-setInterval(refreshPlotA, 3100);
-setInterval(refreshPlotD, 3100);
+setInterval(refreshPlotA, 10000);
+setInterval(refreshPlotD, 10000);
 
 // 3 Sekunden Aktualisierung
 setInterval(fetchLatestData, 3000);
