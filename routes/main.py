@@ -70,9 +70,10 @@ def latest_data():
     else:
         return jsonify({"topic": "", "payload": "", "timestamp": ""})
 
-@main_routes.route('/moistureD-plot')
-def moistureD_plot():
+# Korrigierte Versionen der Plot-Routen
 
+@main_routes.route('/moistureA-plot')
+def moisture_plot():
     # Verbindung zu flask_server db
     conn = mysql.connector.connect(
         host='localhost',
@@ -87,7 +88,7 @@ def moistureD_plot():
         FROM wetness 
         WHERE topic = 'watering/status' 
         ORDER BY id DESC 
-        LIMIT 300
+        LIMIT 500
     """)
     rows = cursor.fetchall()
     cursor.close()
@@ -99,36 +100,60 @@ def moistureD_plot():
     for payload, timestamp in reversed(rows):
         try:
             parts = payload.split(',')
+            moisture_value = None
+            
+            # Suche spezifisch nach moistureA
             for p in parts:
-                if p.startswith('moistureD:'):
-                    value = int(p.split(':')[1])
-                    data.append(value)
-                    timestamps.append(timestamp)
-        except:
+                if p.strip().startswith('moistureA:'):
+                    moisture_value = int(p.split(':')[1])
+                    break
+            
+            # Nur hinzufügen wenn moistureA gefunden wurde
+            if moisture_value is not None:
+                data.append(moisture_value)
+                timestamps.append(timestamp)
+                
+        except (ValueError, IndexError) as e:
+            print(f"Fehler beim Parsen von moistureA: {payload} - {e}")
             continue
 
-    df = pd.DataFrame({'timestamp': timestamps, 'moistureD': data})
+    # Limitiere auf die letzten 300 gültigen Einträge
+    if len(data) > 300:
+        data = data[-300:]
+        timestamps = timestamps[-300:]
 
-    # Matplotlib-Plot erzeugen
-    fig, ax = plt.subplots(figsize=(10, 5))
-    ax.plot(df['timestamp'], df['moistureD'], color='blue', marker='o')
-    ax.set_title("Letzte 300 digitale Moisture-Werte")
-    ax.set_xlabel("Zeit")
-    ax.set_ylabel("Feuchtigkeit B (%)")
+    if not data:
+        # Erstelle leeren Plot wenn keine Daten vorhanden
+        fig, ax = plt.subplots(figsize=(10, 5))
+        ax.text(0.5, 0.5, 'Keine moistureA Daten verfügbar', 
+                horizontalalignment='center', verticalalignment='center', 
+                transform=ax.transAxes, fontsize=14)
+        ax.set_title("Analoge Moisture-Werte (moistureA)")
+    else:
+        df = pd.DataFrame({'timestamp': timestamps, 'moistureA': data})
+        
+        # Matplotlib-Plot erzeugen
+        fig, ax = plt.subplots(figsize=(10, 5))
+        ax.plot(df['timestamp'], df['moistureA'], color='green', marker='o', markersize=3, linewidth=1)
+        ax.set_title(f"Analoge Moisture-Werte (moistureA) - {len(data)} Datenpunkte")
+        ax.set_xlabel("Zeit")
+        ax.set_ylabel("Feuchtigkeit A (%)")
+        ax.grid(True, alpha=0.3)
+        
     plt.xticks(rotation=45)
     plt.tight_layout()
 
     # Bild im Speicher speichern
     img = io.BytesIO()
-    plt.savefig(img, format='png')
+    plt.savefig(img, format='png', dpi=100)
     plt.close(fig)
     img.seek(0)
 
     return send_file(img, mimetype='image/png')
 
-@main_routes.route('/moistureA-plot')
-def moisture_plot():
 
+@main_routes.route('/moistureD-plot')
+def moistureD_plot():
     # Verbindung zu flask_server db
     conn = mysql.connector.connect(
         host='localhost',
@@ -143,7 +168,7 @@ def moisture_plot():
         FROM wetness 
         WHERE topic = 'watering/status' 
         ORDER BY id DESC 
-        LIMIT 300
+        LIMIT 500
     """)
     rows = cursor.fetchall()
     cursor.close()
@@ -155,28 +180,52 @@ def moisture_plot():
     for payload, timestamp in reversed(rows):
         try:
             parts = payload.split(',')
+            moisture_value = None
+            
+            # Suche spezifisch nach moistureD
             for p in parts:
-                if p.startswith('moistureA:'):
-                    value = int(p.split(':')[1])
-                    data.append(value)
-                    timestamps.append(timestamp)
-        except:
+                if p.strip().startswith('moistureD:'):
+                    moisture_value = int(p.split(':')[1])
+                    break
+            
+            # Nur hinzufügen wenn moistureD gefunden wurde
+            if moisture_value is not None:
+                data.append(moisture_value)
+                timestamps.append(timestamp)
+                
+        except (ValueError, IndexError) as e:
+            print(f"Fehler beim Parsen von moistureD: {payload} - {e}")
             continue
 
-    df = pd.DataFrame({'timestamp': timestamps, 'moistureA': data})
+    # Limitiere auf die letzten 300 gültigen Einträge
+    if len(data) > 300:
+        data = data[-300:]
+        timestamps = timestamps[-300:]
 
-    # Matplotlib-Plot erzeugen
-    fig, ax = plt.subplots(figsize=(10, 5))
-    ax.plot(df['timestamp'], df['moistureA'], color='blue', marker='o')
-    ax.set_title("Letzte 300 analogen Moisture-Werte")
-    ax.set_xlabel("Zeit")
-    ax.set_ylabel("Feuchtigkeit A (%)")
+    if not data:
+        # Erstelle leeren Plot wenn keine Daten vorhanden
+        fig, ax = plt.subplots(figsize=(10, 5))
+        ax.text(0.5, 0.5, 'Keine moistureD Daten verfügbar', 
+                horizontalalignment='center', verticalalignment='center', 
+                transform=ax.transAxes, fontsize=14)
+        ax.set_title("Digitale Moisture-Werte (moistureD)")
+    else:
+        df = pd.DataFrame({'timestamp': timestamps, 'moistureD': data})
+        
+        # Matplotlib-Plot erzeugen
+        fig, ax = plt.subplots(figsize=(10, 5))
+        ax.plot(df['timestamp'], df['moistureD'], color='red', marker='o', markersize=3, linewidth=1)
+        ax.set_title(f"Digitale Moisture-Werte (moistureD) - {len(data)} Datenpunkte")
+        ax.set_xlabel("Zeit")
+        ax.set_ylabel("Feuchtigkeit D (%)")
+        ax.grid(True, alpha=0.3)
+        
     plt.xticks(rotation=45)
     plt.tight_layout()
 
     # Bild im Speicher speichern
     img = io.BytesIO()
-    plt.savefig(img, format='png')
+    plt.savefig(img, format='png', dpi=100)
     plt.close(fig)
     img.seek(0)
 

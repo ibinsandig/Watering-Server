@@ -41,7 +41,8 @@ function fetchLatestData() {
                 let pump = '--';
                 
                 parts.forEach(p => {
-                    if (p.startsWith('moisture:')) {
+                    // Unterstützung für verschiedene Moisture-Typen
+                    if (p.startsWith('moisture:') || p.startsWith('moistureA:')) {
                         moisture = p.split(':')[1];
                     }
                     if (p.startsWith('pump:')) {
@@ -52,25 +53,40 @@ function fetchLatestData() {
                 document.getElementById("moisture").textContent = moisture;
                 document.getElementById("pump-status").textContent = pump;
             }
+        })
+        .catch(error => {
+            console.error("Fehler beim Abrufen der Daten:", error);
         });
 }
 
 function refreshPlotA() {
     const plotImg = document.getElementById("moistureA-plot");
-    const timestamp = new Date().getTime();  
-    plotImg.src = `/moistureA-plot?t=${timestamp}`;
+    if (plotImg) {
+        const timestamp = new Date().getTime();  
+        plotImg.src = `/moistureA-plot?t=${timestamp}`;
+        console.log("RefreshPlotA aufgerufen:", plotImg.src);
+    }
 }
 
 function refreshPlotD() {
     const plotImg = document.getElementById("moistureD-plot");
-    const timestamp = new Date().getTime();  
-    plotImg.src = `/moistureD-plot?t=${timestamp}`;
-
+    if (plotImg) {
+        const timestamp = new Date().getTime();  
+        plotImg.src = `/moistureD-plot?t=${timestamp}`;
+        console.log("RefreshPlotD aufgerufen:", plotImg.src);
+    }
 }
 
-// 3,1 Sekunden Aktualisierung
+// Initiale Aktualisierung beim Laden der Seite
+document.addEventListener('DOMContentLoaded', function() {
+    refreshPlotA();
+    refreshPlotD();
+    fetchLatestData();
+});
+
+// 10 Sekunden Aktualisierung für Plots
 setInterval(refreshPlotA, 10000);
 setInterval(refreshPlotD, 10000);
 
-// 3 Sekunden Aktualisierung
+// 3 Sekunden Aktualisierung für aktuelle Daten
 setInterval(fetchLatestData, 3000);
