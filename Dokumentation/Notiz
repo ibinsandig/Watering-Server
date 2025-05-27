@@ -1,0 +1,28 @@
+
+
+Aktivieren des venv
+
+    cd py_server/
+    source Scripts/activate
+
+Ordner nach oben bewegen
+
+    cd ../
+
+Installieren von fehlenden Paketen
+
+    pip install [anwendung]
+
+
+Server_Website starten 
+
+    directory ./py_server/src
+    source server.py
+
+    wenn source nicht geht dann:
+
+    pyhton3 server.py
+
+Website öffnen
+
+    localhost:3000

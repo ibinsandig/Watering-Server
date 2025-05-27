@@ -1,5 +1,6 @@
-import mysql.connector
+import mysql.connector # type: ignore
 
+"""Speichern der Daten in der Datenbank"""
 def insert_data_flaskiot(topic, payload):
     conn = mysql.connector.connect(
         host='localhost',

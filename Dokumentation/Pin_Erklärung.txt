@@ -1,0 +1,140 @@
+### Pin-Erklärung für das ESP-Board
+
+#### Digitale Pins (D0–D8)
+
+| **Pin** | **Beschreibung**                                                                 | **GPIO-Nummer** | **Besonderheiten**                                                                 |
+|---------|---------------------------------------------------------------------------------|-----------------|-----------------------------------------------------------------------------------|
+| **D0**  | I/O, Interrupt, PWM, I2C, **kein 1-Wire**                                       | GPIO16          | Unterstützt keine 1-Wire-Kommunikation. Kein Pull-Up-Widerstand.                 |
+| **D1**  | I/O, SCL (I2C Clock) im Standardmodus                                           | GPIO5           | Kann als normaler GPIO oder für I2C (SCL) verwendet werden.                      |
+| **D2**  | I/O, SDA (I2C Data) im Standardmodus                                            | GPIO4           | Kann als normaler GPIO oder für I2C (SDA) verwendet werden.                      |
+| **D3**  | I/O, Pull-Up, beeinflusst den Boot-Modus                                        | GPIO0           | Muss beim Booten HIGH sein, sonst startet das Board im Flash-Modus.              |
+| **D4**  | I/O, Pull-Up                                                                    | GPIO2           | Muss beim Booten HIGH sein. Standardmäßig mit der Onboard-LED verbunden.         |
+| **D5**  | I/O, SPI Clock (SCK)                                                           | GPIO14          | Kann als normaler GPIO oder für SPI (Clock) verwendet werden.                    |
+| **D6**  | I/O, SPI MISO (Master In Slave Out)                                            | GPIO12          | Kann als normaler GPIO oder für SPI (MISO) verwendet werden.                     |
+| **D7**  | I/O, SPI MOSI (Master Out Slave In)                                            | GPIO13          | Kann als normaler GPIO oder für SPI (MOSI) verwendet werden.                     |
+| **D8**  | I/O, Pull-Down, SPI, beeinflusst den Boot-Modus                                 | GPIO15          | Muss beim Booten LOW sein. Kann für SPI oder als normaler GPIO verwendet werden. |
+
+---
+
+#### Analoger Pin
+
+| **Pin** | **Beschreibung**                                                                 | **GPIO-Nummer** | **Besonderheiten**                                                                 |
+|---------|---------------------------------------------------------------------------------|-----------------|-----------------------------------------------------------------------------------|
+| **A0**  | Analog-Digital-Wandler (ADC), Eingangsspannung 0–3.3V                           | ADC             | Kann analoge Spannungen messen. Maximal 3.3V, sonst kann das Board beschädigt werden. |
+
+---
+
+#### Serielle Pins
+
+| **Pin** | **Beschreibung**                                                                 | **GPIO-Nummer** | **Besonderheiten**                                                                 |
+|---------|---------------------------------------------------------------------------------|-----------------|-----------------------------------------------------------------------------------|
+| **TX**  | UART TX (Serielle Übertragung)                                                  | GPIO1           | Wird für die serielle Kommunikation verwendet. Vorsicht: Kann beim Booten aktiv sein. |
+| **RX**  | UART RX (Serieller Empfang)                                                     | GPIO3           | Wird für die serielle Kommunikation verwendet. Vorsicht: Kann beim Booten aktiv sein. |
+
+---
+
+#### Stromversorgung und Reset
+
+| **Pin** | **Beschreibung**                                                                 | **Besonderheiten**                                                                 |
+|---------|---------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
+| **RST** | Reset-Pin                                                                       | Kann verwendet werden, um das Board manuell zurückzusetzen.                      |
+| **3V3** | 3.3V Stromversorgung                                                            | Liefert 3.3V für externe Komponenten.                                            |
+| **G**   | Masse (GND)                                                                     | Verbindung zur Masse.                                                            |
+| **5V**  | 5V Stromversorgung                                                              | Liefert 5V, wenn das Board über USB betrieben wird.                              |
+
+---
+
+#### Wichtige Hinweise
+1. **Boot-Modus-Pins**:
+   - **GPIO0 (D3)** und **GPIO2 (D4)**: Diese Pins beeinflussen den Boot-Modus. Sie sollten beim Start in den richtigen Zustand gebracht werden (GPIO0 = HIGH, GPIO2 = HIGH).
+   - **GPIO15 (D8)**: Muss beim Start LOW sein.
+
+2. **Onboard-LED**:
+   - Die Onboard-LED ist mit **GPIO2 (D4)** verbunden. Du kannst sie steuern, indem du GPIO2 ein- oder ausschaltest.
+
+3. **Spannungspegel**:
+   - Alle GPIO-Pins arbeiten mit 3.3V. Sie können kurzzeitig 5V tolerieren, aber es ist sicherer, nur 3.3V zu verwenden.
+
+4. **PWM-Unterstützung**:
+   - Alle GPIO-Pins unterstützen PWM (Pulsweitenmodulation), was nützlich ist, um z. B. LEDs zu dimmen oder Motoren zu steuern.
+
+---
+
+#### Fazit
+- **Für LEDs**: Verwende GPIO2 (D4), da es mit der Onboard-LED verbunden ist.
+- **Für Transistoren oder andere Geräte**: GPIO5 (D1) oder GPIO4 (D2) sind gute Optionen, da sie keine Boot-Beschränkungen haben.
+- **Für I2C**: Verwende GPIO5 (D1) und GPIO4 (D2).
+- **Für SPI**: Verwende GPIO14 (D5), GPIO12 (D6), und GPIO13 (D7).
+
+---
+
+### Zusätzliche Begriffe und Protokolle
+
+#### **I²C (Inter-Integrated Circuit)**
+- **Beschreibung**: Ein serielles Kommunikationsprotokoll, das häufig verwendet wird, um Mikrocontroller mit Sensoren, Displays oder anderen Geräten zu verbinden.
+- **Pins**:
+  - **SCL (Serial Clock)**: Taktleitung, die den Datenfluss synchronisiert.
+  - **SDA (Serial Data)**: Datenleitung, über die die Daten gesendet und empfangen werden.
+- **Vorteile**: Unterstützt mehrere Geräte auf derselben Leitung (Adressierung).
+- **Verwendung**: Wird z. B. für Temperatursensoren, OLED-Displays oder Echtzeituhren (RTC) genutzt.
+
+---
+
+#### **PWM (Pulse Width Modulation)**
+- **Beschreibung**: Eine Technik, bei der ein digitales Signal zwischen HIGH und LOW wechselt, um analoge Werte zu simulieren.
+- **Anwendung**:
+  - Dimmen von LEDs.
+  - Steuerung von Servomotoren.
+  - Regelung der Geschwindigkeit von Gleichstrommotoren.
+- **Funktionsweise**: Die "Pulsbreite" (Dauer des HIGH-Signals) bestimmt die Leistung, die an das Gerät geliefert wird.
+
+---
+
+#### **1-Wire**
+- **Beschreibung**: Ein serielles Kommunikationsprotokoll, das nur eine Datenleitung benötigt (plus Masse).
+- **Verwendung**: Häufig für Temperatursensoren wie den DS18B20.
+- **Vorteil**: Einfacher Aufbau, da nur eine Leitung benötigt wird.
+- **Nachteil**: Langsamer als I²C oder SPI.
+
+---
+
+#### **Pull-Up**
+- **Beschreibung**: Ein Widerstand, der einen GPIO-Pin standardmäßig auf HIGH zieht, wenn er nicht aktiv gesteuert wird.
+- **Verwendung**:
+  - Verhindert, dass ein Pin in einem undefinierten Zustand (Floating) bleibt.
+  - Häufig bei Tastern oder I²C-Leitungen verwendet.
+- **Funktionsweise**: Der Widerstand ist zwischen dem Pin und der Versorgungsspannung (z. B. 3.3V) geschaltet.
+
+---
+
+#### **SPI (Serial Peripheral Interface)**
+- **Beschreibung**: Ein schnelles serielles Kommunikationsprotokoll, das häufig für Displays, SD-Karten oder Sensoren verwendet wird.
+- **Pins**:
+  - **SCK (Serial Clock)**: Taktleitung, die den Datenfluss zwischen Master und Slave synchronisiert.
+  - **MOSI (Master Out Slave In)**: Datenleitung, über die der Master Daten an den Slave sendet.
+  - **MISO (Master In Slave Out)**: Datenleitung, über die der Slave Daten an den Master sendet.
+  - **SS (Slave Select)**: Wählt den Slave aus, mit dem der Master kommunizieren möchte.
+- **Vorteile**: Sehr schnell und unterstützt mehrere Slaves.
+- **Nachteil**: Benötigt mehr Leitungen als I²C.
+
+---
+
+#### **TX (Transmit)**
+- **Beschreibung**: Datenleitung für die serielle Übertragung (UART). Sendet Daten vom Mikrocontroller an ein anderes Gerät.
+- **Verwendung**: Wird z. B. für die Kommunikation mit einem Computer oder einem anderen Mikrocontroller verwendet.
+
+---
+
+#### **RX (Receive)**
+- **Beschreibung**: Datenleitung für den seriellen Empfang (UART). Empfängt Daten von einem anderen Gerät.
+- **Verwendung**: Wird z. B. für die Kommunikation mit einem Computer oder einem anderen Mikrocontroller verwendet.
+
+---
+
+### Zusammenfassung
+- **I²C**: Zwei Leitungen (SCL, SDA) für mehrere Geräte.
+- **PWM**: Simuliert analoge Signale durch schnelles Umschalten.
+- **1-Wire**: Einfache Kommunikation mit nur einer Datenleitung.
+- **SPI**: Schnelle Kommunikation mit mehreren Leitungen (SCK, MOSI, MISO, SS).
+- **TX/RX**: Serielle Kommunikation über UART.
+- **Pull-Up**: Widerstand, der einen Pin standardmäßig auf HIGH zieht.

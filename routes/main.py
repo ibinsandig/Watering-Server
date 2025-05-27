@@ -1,34 +1,26 @@
 from flask import send_file, Blueprint, render_template, request, jsonify
-import mysql.connector
+import mysql.connector  # type: ignore
 import paho.mqtt.publish as publish
 import io
-import matplotlib
+import matplotlib   # type: ignore
 matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-import pandas as pd
+import matplotlib.pyplot as plt # type: ignore
+import pandas as pd # type: ignore
 
 main_routes = Blueprint('main_routes', __name__, url_prefix='/')
 
-received_data = []  # Store received MQTT messages
+received_data = []  # Speichern der empfangenen MQTT-Daten
 
+"""Festlegen der Routen für die Startseite und die Steuerung"""
 @main_routes.route('/')
 def index():
     return render_template('index.html')
-
-@main_routes.route('/info')
-def test():
-    return render_template('info.html')
 
 @main_routes.route('/control')
 def control():
     return render_template('control.html')
 
-@main_routes.route('/watering')
-def watering():
-    return render_template('watering.html')
-
-# mqtt data send
-
+"""Route für das Senden von Pumpe (an)/(aus)"""
 @main_routes.route('/api/pump-control', methods=['POST'])
 def pump_control():
     data = request.get_json()
@@ -43,14 +35,13 @@ def pump_control():
 
     return jsonify({'status': 'success', 'action': action})
 
-#mqtt data grab
-
+"""Route für das Erhalten der aktuellen MQTT-Daten"""
 @main_routes.route('/get_mqtt_data')
 def get_mqtt_data():
     return jsonify({'data': received_data})
 
 
-# database data
+"""Route für das Abgreifen der letzten Daten aus der Datenbank"""
 @main_routes.route('/api/latest-data')
 def latest_data():
     conn = mysql.connector.connect(
@@ -70,8 +61,7 @@ def latest_data():
     else:
         return jsonify({"topic": "", "payload": "", "timestamp": ""})
 
-# Korrigierte Versionen der Plot-Routen
-
+"""Route für das Plotten der Graphik moistureA"""
 @main_routes.route('/moistureA-plot')
 def moisture_plot():
     # Verbindung zu flask_server db
@@ -151,7 +141,7 @@ def moisture_plot():
 
     return send_file(img, mimetype='image/png')
 
-
+"""Route für das Plotten der Graphik moistureD"""
 @main_routes.route('/moistureD-plot')
 def moistureD_plot():
     # Verbindung zu flask_server db

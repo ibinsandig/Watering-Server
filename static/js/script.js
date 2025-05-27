@@ -1,15 +1,14 @@
 console.log("Laden script.js");
 
+// Funktion zum zum Wechseln der Webpage
 function ZumBedienpanel(){
     window.location.href = "/control";
 }
 function ZurMainpage(){
     window.location.href = "/";
 }
-function ZurInfo(){
-    window.location.href = "/info";
-}
 
+// Funktion zum Steuern der Pumpe
 function controlPump(turnOn) {
     const action = turnOn ? 'on' : 'off';
 
@@ -29,6 +28,7 @@ function controlPump(turnOn) {
     });
 }
 
+// Funktion zum Laden der letzten Daten
 function fetchLatestData() {
     fetch('/api/latest-data')
         .then(response => response.json())
@@ -64,6 +64,7 @@ function fetchLatestData() {
         });
 }
 
+// Funktion zum Aktualisieren von PlotA und PlotD
 function refreshPlotA() {
     const plotImg = document.getElementById("moistureA-plot");
     if (plotImg) {
@@ -72,7 +73,6 @@ function refreshPlotA() {
         console.log("RefreshPlotA aufgerufen:", plotImg.src);
     }
 }
-
 function refreshPlotD() {
     const plotImg = document.getElementById("moistureD-plot");
     if (plotImg) {
@@ -82,7 +82,7 @@ function refreshPlotD() {
     }
 }
 
-// Initiale Aktualisierung beim Laden der Seite
+// Intiales Laden der Plots und Daten
 document.addEventListener('DOMContentLoaded', function() {
     refreshPlotA();
     refreshPlotD();

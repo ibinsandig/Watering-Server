@@ -1,0 +1,30 @@
+Durchführung in 2er-Teams (bei 43 Personen(?) 20 2er-Gruppen + 1 3er-Gruppe) 
+    →Zuordnung zu den Übungsterminen per Zufallsverfahren, tauschen ist möglich
+
+Überthema: "Internet of Things (IoT)"
+    ▪ Das Projekt muss die 7 unter "Inhalt" aufgeführten Themen abdecken (nächste Folie)
+    ▪ Aufwand pro Person ca. 80 Stunden (Berechnung: 5 CP = 150h, davon 30h für die Vorlesung und 30h für die projektunabhängigen Programmierübungen -> bleiben 80h für das Projekt + 10h Puffer)
+    ▪ Projekts geht als Bonus in die Prüfung ein
+    ▪ das Projekt ist auch inhaltlich die Basis für die Prüfung. D.h. es werden in der Prüfung Fragen zum Projekt gestellt, die nur mit Hilfe des Project-Quellcodes beantwortet werden können.
+    ▪ das Projekt muss aus Software UND Hardware bestehen und zusammen funktionsfähig sein.
+    ▪ zum Projekt gehört auch ein rudimentäres Projektmanagement (User Stories, Issues, Projektsteuerung, Stundenaufzeichnung, z.B. über Github)
+    ▪ die Basis für das Projekt ist der Mikrocontroller ESP8266 (micropython-fähig)
+
+Diese Themen müssen im Miniprojekt abgedeckt werden:
+[✓]    1. Mikrocontroller: Das Projekt muss mit einem Mikrocontroller, z.B. ESP8266, umgesetzt werden /check
+
+            ESP8266 verwendet
+
+[✓]    2. Simple Multitasking: Es muss dabei das Konzept der voneinander unabhängigen Aufgaben umgesetzt werden.
+
+        threading im python server
+
+[✓]    3. Kommunikation: Es müssen Daten in beiden Richtungen zwischen dem Mikrocontroller und dem Server/Benutzer-Interface ausgetauscht werden.
+
+[✓]    4. Datenspeicher: Es ist eine langfristige Datenspeicherungzu implementieren. Diesesoll über eine Datenbank realisiert werden.
+
+[✓]    5. User-Interface über HTML (+Script): Es ist ein graphisches User-Interface vorzusehen
+
+[X]    6. Qualitätssicherung: Dokumentation, z.B. über Docstring und Upload in Repository
+
+[✓]    7. Objekte: Das Mikrocontrollerprogramm muss mithilfe von Objekten umgesetzt werden.
