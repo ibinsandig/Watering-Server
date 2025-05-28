@@ -124,7 +124,7 @@ def moisture_plot():
         
         # Matplotlib-Plot erzeugen
         fig, ax = plt.subplots(figsize=(10, 5))
-        ax.plot(df['timestamp'], df['moistureA'], color=(38, 138, 180), marker='o', markersize=3, linewidth=1)
+        ax.plot(df['timestamp'], df['moistureA'], color=(38/255, 138/255, 180/255), marker='o', markersize=3, linewidth=1)
         ax.set_title(f"Analoge Moisture-Werte (moistureA) - {len(data)} Datenpunkte")
         ax.set_xlabel("Zeit")
         ax.set_ylabel("Feuchtigkeit A (%)")
