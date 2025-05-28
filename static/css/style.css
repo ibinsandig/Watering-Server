@@ -1,11 +1,11 @@
 h1{
-    color: red;
+    color: rgb(33, 138, 180);
 }
-button1{
+/* button1{
     background-color: green;
     color: white;
     font-size: 20px;
-}
+}  */
 body{
     background-image: url('../img/plant_background.jpg');
     background-size: cover;
@@ -29,6 +29,7 @@ body{
     border-radius: 5px;
 }
 .controls button {
+    text-align: center;
     padding: 10px 20px;
     margin: 5px;
     background: #4CAF50;
