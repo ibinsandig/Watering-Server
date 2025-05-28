@@ -2,11 +2,6 @@ h1{
     color: rgb(33, 138, 180);
     text-align: center;
 }
-/* button1{
-    background-color: green;
-    color: white;
-    font-size: 20px;
-}  */
 body{
     background-image: url('../img/plant_background.jpg');
     background-size: cover;
@@ -20,6 +15,7 @@ body{
     justify-content: center;
     align-items: center;
     height: 100vh;
+    text-align: center;
 }
 .container {
     max-width: 800px;
