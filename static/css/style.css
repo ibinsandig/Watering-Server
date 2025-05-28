@@ -1,5 +1,6 @@
 h1{
     color: rgb(33, 138, 180);
+    text-align: center;
 }
 /* button1{
     background-color: green;
@@ -13,6 +14,12 @@ body{
     margin: 0;
     padding: 20px;
     background-color: #f0f0f0;
+}
+.wegControl{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 .container {
     max-width: 800px;
