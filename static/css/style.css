@@ -27,6 +27,13 @@ body{
     border-radius: 5px;
     cursor: pointer;
 }
+.wegControl{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
 .container {
     max-width: 800px;
     margin: 0 auto;
