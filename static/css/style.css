@@ -1,10 +1,6 @@
 h1{
-    color: red;
-}
-button1{
-    background-color: green;
-    color: white;
-    font-size: 20px;
+    color: rgb(33, 138, 180);
+    text-align: center;
 }
 body{
     background-image: url('../img/plant_background.jpg');
@@ -13,6 +9,23 @@ body{
     margin: 0;
     padding: 20px;
     background-color: #f0f0f0;
+
+}
+.wegControl{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+.wegControl button {
+    padding: 10px 20px;
+    margin: 5px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
 .container {
     max-width: 800px;
@@ -29,6 +42,7 @@ body{
     border-radius: 5px;
 }
 .controls button {
+    text-align: center;
     padding: 10px 20px;
     margin: 5px;
     background: #4CAF50;

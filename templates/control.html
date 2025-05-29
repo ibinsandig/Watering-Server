@@ -16,22 +16,20 @@
             <h2>Analoger Wert:<span id="moistureA">--</span></h2>
             <h2>Pumpenstatus: <span id="pump-status">AUS</span></h2>
         </div>
-        <!--Steuerung der Pumpe mit Buttons-->
+        <!--Steuerung der Pumpe mit Buttons und Navigations Button-->
         <div class="controls">
             <button onclick="controlPump(true)">Pumpe Starten</button>
             <button onclick="controlPump(false)">Pumpe Stoppen</button>
-        </div>
-        <!--Button zur Navigation zur Startpage-->
-        <div class="navigation">
             <button onclick="ZurMainpage()">Zurück zur Startseite</button>
         </div>
         <!--Grafiken für die Feuchtigkeitsverläufe-->
         <div class="sensor-graphA">
-            <h2>Moisture Verlauf (letzte 300 Einträge)</h2>
+            <h2>Analoger Feuchtigkeitsverlauf</h2>
+            <h3></h3>
             <img id="moistureA-plot" src="/moistureA-plot" alt="Moisture A Plot" style="width: 100%; max-width: 800px;">
         </div>
         <div class="sensor-graphD">
-            <h2>Moisture Verlauf (letzte 300 Einträge)</h2>
+            <h2>Digitaler Feuchtigkeitsverlauf</h2>
             <img id="moistureD-plot" src="/moistureD-plot" alt="Moisture D Plot" style="width: 100%; max-width: 800px;">
         </div>
     </div>
