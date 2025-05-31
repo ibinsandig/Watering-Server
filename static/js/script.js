@@ -37,7 +37,8 @@ function fetchLatestData() {
             if (data.topic === "watering/status") {
                 // Beispiel: payload = "moisture:45,pump:on"
                 const parts = data.payload.split(',');
-                let moisture = '--';
+                let moistureA = '--';
+                let moistureD = '--';
                 let pump = '--';
                 
                 parts.forEach(p => {

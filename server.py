@@ -16,6 +16,7 @@ socketio = SocketIO(app)
 MQTT_BROKER = 'localhost'
 MQTT_PORT = 1883
 MQTT_TOPIC_SUB = 'watering/status'
+MQTT_TOPIC_SUB2 = 'watering/pump'
 MQTT_TOPIC_PUB = 'watering/control'
 
 """Subscriben des MQTT-Topics"""
@@ -51,17 +52,18 @@ def on_message(client, userdata, msg):
 
 """Verbinden mit dem MQTT-Broker in einer unendlichen Schleife"""
 def connect_mqtt():
-    try:    
-        mqtt_client = mqtt.Client()
-        mqtt_client.on_connect = on_connect
-        mqtt_client.on_message = on_message 
-        mqtt_client.connect(MQTT_BROKER, MQTT_PORT, 60)
-        mqtt_client.loop_start()        
-    except Exception as e:
-        print(f"Fehler beim Verbinden zum MQTT-Broker: {e}")
-        print("Versuche erneut in 5 Sekunden...")
-        time.sleep(5)
-        connect_mqtt()
+    while True:
+        try:    
+            mqtt_client = mqtt.Client()
+            mqtt_client.on_connect = on_connect
+            mqtt_client.on_message = on_message 
+            mqtt_client.connect(MQTT_BROKER, MQTT_PORT, 60)
+            mqtt_client.loop_forever()
+            break  # wenn die Verbindung erfolgreich ist, verlasse die Schleife    
+        except Exception as e:
+            print(f"Fehler beim Verbinden zum MQTT-Broker: {e}")
+            print("Versuche erneut in 5 Sekunden...")
+            time.sleep(5)
         
 threading.Thread(target=connect_mqtt).start()
  
