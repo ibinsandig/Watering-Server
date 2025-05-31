@@ -1,7 +1,7 @@
 import mysql.connector # type: ignore
 
 """Speichern der Daten in der Datenbank"""
-def insert_data_wetness(topic, message):
+def insert_data_wetness(topic, payload):
     conn = mysql.connector.connect(
         host='localhost',
         user='sflask',
@@ -10,7 +10,7 @@ def insert_data_wetness(topic, message):
     )
     cursor = conn.cursor()
     sql = "INSERT INTO wetness (topic, message) VALUES (%s, %s)"
-    cursor.execute(sql, (topic, message))
+    cursor.execute(sql, (topic, payload))
     conn.commit()
     cursor.close()
     conn.close()
