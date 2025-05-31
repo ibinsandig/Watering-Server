@@ -1,7 +1,7 @@
 import mysql.connector # type: ignore
 
 """Speichern der Daten in der Datenbank"""
-def insert_data_flaskiot(topic, payload):
+def insert_data_wetness(topic, message):
     conn = mysql.connector.connect(
         host='localhost',
         user='sflask',
@@ -9,8 +9,8 @@ def insert_data_flaskiot(topic, payload):
         database='flask_server'
     )
     cursor = conn.cursor()
-    sql = "INSERT INTO wetness (topic, payload) VALUES (%s, %s)"
-    cursor.execute(sql, (topic, payload))
+    sql = "INSERT INTO wetness (topic, message) VALUES (%s, %s)"
+    cursor.execute(sql, (topic, message))
     conn.commit()
     cursor.close()
     conn.close()

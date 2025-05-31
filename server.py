@@ -4,7 +4,8 @@ import time
 import paho.mqtt.client as mqtt
 from flask_socketio import SocketIO
 import threading
-from db.datab import insert_data_flaskiot # type: ignore
+from db.insert_data_wetness import insert_data_wetness # type: ignore
+from db.insert_data_pump import insert_data_pump # type: ignore
 import mysql.connector # type: ignore
 
 app = Flask(__name__, static_url_path='/static')
@@ -31,23 +32,22 @@ def on_connect(client, userdata, flags, rc):
     
     if rc == 0:
         client.subscribe(MQTT_TOPIC_SUB)
-        print(f"Subscribed to topic: {MQTT_TOPIC_SUB}")
+        client.subscribe("watering/pump")  # <--- NEU
+        print(f"Subscribed to topics: {MQTT_TOPIC_SUB}, watering/pump")
 
 def on_message(client, userdata, msg):
     payload = msg.payload.decode()
     print(f"Received message: {payload} on topic {msg.topic}")
-    
-    # Speichern in MariaDB über die externe Datei
-    insert_data_flaskiot(msg.topic, payload)
-    
-    # Weiterleiten der Nachricht an Web-Clients
+
+    if msg.topic == "watering/status":
+        insert_data_wetness(msg.topic, payload)
+    elif msg.topic == "watering/pump":
+        insert_data_pump(msg.topic, payload)
+
     socketio.emit('mqtt_message', {
         'topic': msg.topic,
         'payload': payload
     })
-
-#            # Set up MQTT client
-#            on_connect
 
 """Verbinden mit dem MQTT-Broker in einer unendlichen Schleife"""
 def connect_mqtt():

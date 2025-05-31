@@ -28,7 +28,7 @@ function controlPump(turnOn) {
     });
 }
 
-// Funktion zum Laden der letzten Daten
+// Funktion zum Laden der letzten Feuchtigkeitsdaten
 function fetchLatestData() {
     fetch('/api/latest-data')
         .then(response => response.json())
@@ -64,6 +64,21 @@ function fetchLatestData() {
         });
 }
 
+//Fuznktion zum Abrufen des letzten Pumpenstatus
+function fetchPumpStatus() {
+    fetch('/api/latest-pump')
+        .then(response => response.json())
+        .then(data => {
+            let status = '--';
+            if (data.payload === "1") status = "EIN";
+            if (data.payload === "0") status = "AUS";
+            document.getElementById("pump-status").textContent = status;
+        })
+        .catch(error => {
+            console.error("Fehler beim Abrufen des Pumpenstatus:", error);
+        });
+}
+
 // Funktion zum Aktualisieren von PlotA und PlotD
 function refreshPlotA() {
     const plotImg = document.getElementById("moistureA-plot");
@@ -96,3 +111,6 @@ setInterval(refreshPlotD, 10000);
 
 // 0,5 Sekunden Aktualisierung für aktuelle Daten
 setInterval(fetchLatestData, 500);
+
+// Rufe fetchPumpStatus regelmäßig auf, z.B. alle 0,5 Sekunden:
+setInterval(fetchPumpStatus, 500);

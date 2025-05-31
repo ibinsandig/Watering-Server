@@ -23,6 +23,7 @@ pump_time_stop = 3
 MQTT_BROKER = "192.168.178.21"
 MQTT_PORT = 1883
 MQTT_TOPIC_PUB = b'watering/status'
+MQTT_TOPIC_PUB2 = b'watering/pump'
 MQTT_TOPIC_SUB = b'watering/control'
 
 """Funktion zum Senden von Nachrichten über MQTT"""
@@ -135,6 +136,9 @@ def run_watering():
             led_green.off()
             data_digital = 0
             time.sleep(pump_time_stop)
+
+        senden(MQTT_TOPIC_PUB2, status_pump, "pump")
+        
 
 """Ausführen der Funktionen"""
 client = connect_mqtt()
