@@ -103,13 +103,14 @@ def run_watering():
             # Pumpenlogik: Pumpe AN wenn manuell aktiviert ODER Boden trocken
             if status_pump == 1 or analog_trocken:
                 print("--------------")
+                print(f"Sensor analog: {sensor_analog.read()}")
+                print(f"Sensor digital: {sensor_digital.value()}")
+                print(f"Pumpenstatus: {status_pump}")
+                print(".-.-.-.-.-.-.-.")
                 print("Pumpe wird aktiviert")
                 senden(MQTT_TOPIC_PUB, sensor_digital.value(), "moistureD")
                 time.sleep(1)
                 senden(MQTT_TOPIC_PUB, sensor_analog.read(), "moistureA")
-                print(f"Sensor analog: {sensor_analog.read()}")
-                print(f"Sensor digital: {sensor_digital.value()}")
-                
                 led_green.on()
                 pump.on()
                 time.sleep(pump_time)
@@ -119,6 +120,10 @@ def run_watering():
                 
             else:
                 print("--------------")
+                print(f"Sensor analog: {sensor_analog.read()}")
+                print(f"Sensor digital: {sensor_digital.value()}")
+                print(f"Pumpenstatus: {status_pump}")
+                print(".-.-.-.-.-.-.-.")
                 print("Pumpe bleibt aus - Boden feucht genug")
                 senden(MQTT_TOPIC_PUB, sensor_digital.value(), "moistureD")
                 time.sleep(1)
