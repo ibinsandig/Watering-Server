@@ -9,7 +9,7 @@ def insert_data_wetness(topic, payload):
         database='flask_server'
     )
     cursor = conn.cursor()
-    sql = "INSERT INTO wetness (topic, message) VALUES (%s, %s)"
+    sql = "INSERT INTO wetness (topic, payload) VALUES (%s, %s)"
     cursor.execute(sql, (topic, payload))
     conn.commit()
     cursor.close()
