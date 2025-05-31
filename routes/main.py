@@ -44,43 +44,22 @@ def get_mqtt_data():
 """Route für das Abgreifen der letzten Feuchtigkeitsdaten aus der Datenbank"""
 @main_routes.route('/api/latest-data')
 def latest_data():
-    try:
-        conn = mysql.connector.connect(
-            host='localhost',
-            user='sflask',
-            password='12345678',
-            database='flask_server'
-        )
-        cursor = conn.cursor(dictionary=True)
-        
-        cursor.execute("SELECT * FROM wetness ORDER BY id DESC LIMIT 1")
-        result = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        
-        if result and result['payload']:
-            print(f"Latest data from DB: {result}")
-            return jsonify({
-                'topic': result['topic'],
-                'payload': result['payload'],
-                'timestamp': result['timestamp'].isoformat() if result['timestamp'] else ""
-            })
-        else:
-            print("No data found in wetness table")
-            return jsonify({
-                "topic": "",
-                "payload": "",
-                "timestamp": ""
-            })
-            
-    except Exception as e:
-        print(f"Error in latest_data route: {e}")
-        return jsonify({
-            "topic": "",
-            "payload": "",
-            "timestamp": "",
-            "error": str(e)
-        }), 500
+    conn = mysql.connector.connect(
+        host='localhost',
+        user='sflask',
+        password='12345678',
+        database='flask_server'
+    )
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM wetness ORDER BY id DESC LIMIT 1")
+    result = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    
+    if result:
+        return jsonify(result)
+    else:
+        return jsonify({"topic": "", "payload": "", "timestamp": ""})
 
 """Route für das Abgreifen der letzten Pumpendaten aus der Datenbank"""
 @main_routes.route('/api/latest-pump')
