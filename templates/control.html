@@ -15,6 +15,12 @@
             <h2>Digitaler Wert: <span id="moistureD">--</span></h2>
             <h2>Analoger Wert:<span id="moistureA">--</span></h2>
             <h2>Pumpenstatus: <span id="pump-status">AUS</span></h2>
+            <!-- Trigger-Wert Steuerung -->
+        <div class="trigger-control">
+            <h2>Trigger-Wert: <span id="trigger-value">--</span></h2>
+            <input type="number" id="trigger-input" placeholder="Neuer Trigger-Wert">
+            <button onclick="setTrigger()">Setzen</button>
+        </div>
         </div>
         <!--Steuerung der Pumpe mit Buttons und Navigations Button-->
         <div class="controls">
@@ -31,12 +37,6 @@
         <div class="sensor-graphD">
             <h2>Digitaler Feuchtigkeitsverlauf</h2>
             <img id="moistureD-plot" src="/moistureD-plot" alt="Moisture D Plot" style="width: 100%; max-width: 800px;">
-        </div>
-        <!-- Trigger-Wert Steuerung -->
-        <div class="trigger-control">
-            <h2>Trigger-Wert: <span id="trigger-value">--</span></h2>
-            <input type="number" id="trigger-input" placeholder="Neuer Trigger-Wert">
-            <button onclick="setTrigger()">Setzen</button>
         </div>
     </div>
 </body>
