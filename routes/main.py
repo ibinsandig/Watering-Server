@@ -139,16 +139,17 @@ def moisture_plot():
                 horizontalalignment='center', verticalalignment='center', 
                 transform=ax.transAxes, fontsize=14)
         ax.set_title("Analoge Moisture-Werte (moistureA)")
+        ax.set_ylim(0, 1100)
     else:
+        # den Plot erstellen
         df = pd.DataFrame({'timestamp': timestamps, 'moistureA': data})
-        
-        # Matplotlib-Plot erzeugen
         fig, ax = plt.subplots(figsize=(10, 5))
         ax.plot(df['timestamp'], df['moistureA'], color=(38/255, 138/255, 180/255), marker='o', markersize=3, linewidth=1)
         ax.set_title(f"Analoge Moisture-Werte (moistureA) - {len(data)} Datenpunkte")
         ax.set_xlabel("Zeit")
         ax.set_ylabel("Feuchtigkeit A (%)")
         ax.grid(True, alpha=0.3)
+        ax.set_ylim(0, 1100)
         
         # Trigger-Wert holen
         conn = mysql.connector.connect(
