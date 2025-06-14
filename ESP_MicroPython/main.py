@@ -24,22 +24,36 @@ client = None
 """Konfiguration des MQTT-Brokers und der Topics"""
 MQTT_BROKER = "192.168.178.21"
 MQTT_PORT = 1883
-MQTT_TOPIC_PUB = b'watering/status'
-MQTT_TOPIC_PUB2 = b'watering/pump'
-MQTT_TOPIC_SUB = b'watering/control'
+MQTT_TOPIC_PUB_MOISTURE = b'watering/status'
+MQTT_TOPIC_PUB_PUMP = b'watering/pump'
+MQTT_TOPIC_SUB_PUMP = b'watering/control'
+MQTT_TOPIC_SUB_TRIGGER = b'watering/trigger'
+
+def empfangen(topic, msg):
+    topic = topic.decode()
+    message = msg.decode()
+    if topic == "watering/control":
+        # Pumpensteuerung auswerten
+        pass
+    elif topic == "watering/trigger":
+        # Triggerwert auswerten
+        pass
+
+def connect_mqtt():
+    # ...
+    client.subscribe(MQTT_TOPIC_SUB_PUMP)
+    client.subscribe(MQTT_TOPIC_SUB_TRIGGER)
+    # ...
 
 """Funktion zum Senden von Nachrichten über MQTT"""
-def senden(zu_verwendende_topic, data, topic):
+def senden(topic, data, typ):
     global client
-    
     if client:
-        status = f"{topic}:{data}"
+        status = f"{typ}:{data}"
         print(status)
         status_msg = str(status).encode()
-        print(status_msg)
-        
         try:
-            client.publish(zu_verwendende_topic, status_msg)
+            client.publish(topic, status_msg)
             print(f"Nachricht gesendet: {status_msg}")
         except Exception as e:
             print(f"Fehler beim Senden der Nachricht: {e}")
@@ -66,12 +80,13 @@ def empfangen(topic, msg):
 
 """Herstellen der MQTT-Verbindung und subscriben des Topics"""
 def connect_mqtt():
+    global client
     try:
         client = MQTTClient("ESP8266", MQTT_BROKER, port=MQTT_PORT)
-        client.set_callback (empfangen)
+        client.set_callback(empfangen)
         client.connect()
-        client.subscribe(MQTT_TOPIC_SUB)
-        client.subscribe(b'watering/trigger')
+        client.subscribe(MQTT_TOPIC_SUB_PUMP)
+        client.subscribe(MQTT_TOPIC_SUB_TRIGGER)
         print("MQTT verbunden")
         return client
     except Exception as e:
@@ -90,61 +105,34 @@ def auswertung_analog(trigger):
 """Hauptfunktion zum Betrieb der automatischen Bewässerung"""
 def run_watering():
     global client, status_pump
-    
     while True:
+        print("DAS IST DER TRIGGER:", trigger)
         try:
-            # MQTT-Verbindung prüfen/wiederherstellen
             if client:
                 client.check_msg()
             else:
                 client = connect_mqtt()
-                
-            # Sensordaten lesen
             analog_trocken = auswertung_analog(trigger)
-            
-            # Pumpenlogik: Pumpe AN wenn manuell aktiviert ODER Boden trocken
             if status_pump == 1 or analog_trocken:
-                print("--------------")
-                print(f"Sensor analog: {sensor_analog.read()}")
-                print(f"Sensor digital: {sensor_digital.value()}")
-                print(f"Pumpenstatus: {status_pump}")
-                print(".-.-.-.-.-.-.-.")
-                print("Pumpe wird aktiviert")
-                senden(MQTT_TOPIC_PUB, sensor_digital.value(), "moistureD")
+                senden(MQTT_TOPIC_PUB_MOISTURE, sensor_digital.value(), "moistureD")
                 time.sleep(1)
-                senden(MQTT_TOPIC_PUB, sensor_analog.read(), "moistureA")
+                senden(MQTT_TOPIC_PUB_MOISTURE, sensor_analog.read(), "moistureA")
                 led_green.on()
                 pump.on()
                 time.sleep(pump_time)
-                pump.off()  # Pumpe nach pump_time ausschalten
-                print(f"Pumpe lief für {pump_time} Sekunden")
-                print("--------------")
-                
+                pump.off()
             else:
-                print("--------------")
-                print(f"Sensor analog: {sensor_analog.read()}")
-                print(f"Sensor digital: {sensor_digital.value()}")
-                print(f"Pumpenstatus: {status_pump}")
-                print(".-.-.-.-.-.-.-.")
-                print("Pumpe bleibt aus - Boden feucht genug")
-                senden(MQTT_TOPIC_PUB, sensor_digital.value(), "moistureD")
+                senden(MQTT_TOPIC_PUB_MOISTURE, sensor_digital.value(), "moistureD")
                 time.sleep(1)
-                senden(MQTT_TOPIC_PUB, sensor_analog.read(), "moistureA")
+                senden(MQTT_TOPIC_PUB_MOISTURE, sensor_analog.read(), "moistureA")
                 led_green.off()
-                print("--------------")
-            
-            # Pumpenstatus senden
-            senden(MQTT_TOPIC_PUB2, status_pump, "pump")
-            
-            # Warten zwischen den Zyklen
+            # Pumpenstatus separat senden
+            senden(MQTT_TOPIC_PUB_PUMP, status_pump, "pump")
             time.sleep(pump_time_stop)
-            
         except Exception as e:
             print('Fehler in Hauptschleife:', e)
             time.sleep(5)
             client = None
 
-
-"""Ausführen der Funktionen"""
 client = connect_mqtt()
 run_watering()

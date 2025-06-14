@@ -15,36 +15,21 @@ socketio = SocketIO(app)
 """Konfiguration des MQTT-Brokers und der Topics"""
 MQTT_BROKER = 'localhost'
 MQTT_PORT = 1883
-MQTT_TOPIC_SUB = 'watering/status'
-MQTT_TOPIC_SUB2 = 'watering/pump'
-MQTT_TOPIC_PUB = 'watering/control'
+MQTT_TOPIC_SUB_MOISTURE = 'watering/status'
+MQTT_TOPIC_SUB_PUMP = 'watering/pump'
+MQTT_TOPIC_PUB_PUMP = 'watering/control'
+MQTT_TOPIC_PUB_TRIGGER = 'watering/trigger'
 
 """Subscriben des MQTT-Topics"""
 def on_connect(client, userdata, flags, rc):
-    status = {
-        0: "Erfolgreich verbunden",
-        1: "Fehler: Falsche Protokollversion",
-        2: "Fehler: Ungültige Client-ID",
-        3: "Fehler: Server nicht verfügbar",
-        4: "Fehler: Falsche Zugangsdaten",
-        5: "Fehler: Nicht autorisiert"
-    }
-    print(f"MQTT Verbindungsstatus: {status.get(rc, 'Unbekannter Fehler')}")
-    
-    if rc == 0:
-        client.subscribe(MQTT_TOPIC_SUB)
-        client.subscribe("watering/pump")  # <--- NEU
-        print(f"Subscribed to topics: {MQTT_TOPIC_SUB}, watering/pump")
+    client.subscribe(MQTT_TOPIC_SUB_MOISTURE)
+    client.subscribe(MQTT_TOPIC_SUB_PUMP)
 
 def on_message(client, userdata, msg):
-    payload = msg.payload.decode()
-    print(f"Received message: {payload} on topic {msg.topic}")
-
-    if msg.topic == "watering/status":
-        insert_data_wetness(msg.topic, payload)
-    elif msg.topic == "watering/pump":
-        insert_data_pump(msg.topic, payload)
-
+    if msg.topic == MQTT_TOPIC_SUB_MOISTURE:
+        insert_data_wetness(msg.topic, msg.payload.decode())
+    elif msg.topic == MQTT_TOPIC_SUB_PUMP:
+        insert_data_pump(msg.topic, msg.payload.decode())
     socketio.emit('mqtt_message', {
         'topic': msg.topic,
         'payload': payload

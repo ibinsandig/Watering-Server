@@ -24,16 +24,13 @@ def control():
 """Route für das Senden von Pumpe (an)/(aus)"""
 @main_routes.route('/api/pump-control', methods=['POST'])
 def pump_control():
+    # sendet auf watering/control
     data = request.get_json()
     action = data.get('action')
-
     if action not in ['on', 'off']:
         return jsonify({'status': 'error', 'message': 'Ungültige Aktion'}), 400
-
-    print(f"Pumpe soll geschaltet werden: {action}")  
-
-    publish.single("watering/control", action, hostname="localhost")  
-
+    print(f"Pumpe soll geschaltet werden: {action}")
+    publish.single("watering/control", action, hostname="localhost")
     return jsonify({'status': 'success', 'action': action})
 
 """Route für das Erhalten der aktuellen MQTT-Daten"""
@@ -271,7 +268,7 @@ def trigger_value():
         except ValueError:
             return jsonify({'status': 'error', 'message': 'Ungültiger Wert'}), 400
         insert_data_trigger(value)
-        # MQTT senden
+        # Trigger separat publishen!
         publish.single("watering/trigger", str(value), hostname="localhost")
         return jsonify({'status': 'success', 'value': value})
     else:
