@@ -32,6 +32,12 @@
             <h2>Digitaler Feuchtigkeitsverlauf</h2>
             <img id="moistureD-plot" src="/moistureD-plot" alt="Moisture D Plot" style="width: 100%; max-width: 800px;">
         </div>
+        <!-- Trigger-Wert Steuerung -->
+        <div class="trigger-control">
+            <h2>Trigger-Wert: <span id="trigger-value">--</span></h2>
+            <input type="number" id="trigger-input" placeholder="Neuer Trigger-Wert">
+            <button onclick="setTrigger()">Setzen</button>
+        </div>
     </div>
 </body>
 </html>

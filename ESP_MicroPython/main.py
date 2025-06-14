@@ -46,22 +46,23 @@ def senden(zu_verwendende_topic, data, topic):
 
 """Funktion zum Empfangen von Nachrichten über MQTT"""
 def empfangen(topic, msg):
-    global status_pump
-    
-    print(f"Nachricht empfangen:")
+    global status_pump, trigger
     topic = topic.decode()
-    print(f"Topic: {topic}")
     message = msg.decode()
-    print(f"Nachricht: {message}")
-    
-    if message == "on":
-        status_pump = 1
-        #led_green.on()
-        print("Pumpe eingeschaltet")
-    elif message == "off":
-        status_pump = 0
-        #led_green.off()
-        print("Pumpe ausgeschaltet")
+    print(f"Nachricht empfangen: Topic: {topic}, Nachricht: {message}")
+    if topic == "watering/control":
+        if message == "on":
+            status_pump = 1
+            print("Pumpe eingeschaltet")
+        elif message == "off":
+            status_pump = 0
+            print("Pumpe ausgeschaltet")
+    elif topic == "watering/trigger":
+        try:
+            trigger = int(message)
+            print(f"Neuer Trigger-Wert empfangen: {trigger}")
+        except ValueError:
+            print("Ungültiger Trigger-Wert empfangen")
 
 """Herstellen der MQTT-Verbindung und subscriben des Topics"""
 def connect_mqtt():
@@ -70,6 +71,7 @@ def connect_mqtt():
         client.set_callback (empfangen)
         client.connect()
         client.subscribe(MQTT_TOPIC_SUB)
+        client.subscribe(b'watering/trigger')
         print("MQTT verbunden")
         return client
     except Exception as e:

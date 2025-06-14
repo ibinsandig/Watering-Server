@@ -6,6 +6,7 @@ import matplotlib   # type: ignore
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt # type: ignore
 import pandas as pd # type: ignore
+from db.insert_data_trigger import insert_data_trigger # am Anfang importieren
 
 main_routes = Blueprint('main_routes', __name__, url_prefix='/')
 
@@ -149,6 +150,23 @@ def moisture_plot():
         ax.set_ylabel("Feuchtigkeit A (%)")
         ax.grid(True, alpha=0.3)
         
+        # Trigger-Wert holen
+        conn = mysql.connector.connect(
+            host='localhost',
+            user='sflask',
+            password='12345678',
+            database='flask_server'
+        )
+        cursor = conn.cursor()
+        cursor.execute("SELECT value FROM trigger_values ORDER BY id DESC LIMIT 1")
+        trigger_result = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        if trigger_result and data:
+            trigger_value = trigger_result[0]
+            ax.axhline(trigger_value, color='red', linestyle='--', label=f'Trigger: {trigger_value}')
+            ax.legend()
+        
     plt.xticks(rotation=45)
     plt.tight_layout()
 
@@ -239,3 +257,36 @@ def moistureD_plot():
     img.seek(0)
 
     return send_file(img, mimetype='image/png')
+
+@main_routes.route('/api/trigger', methods=['GET', 'POST'])
+def trigger_value():
+    if request.method == 'POST':
+        data = request.get_json()
+        value = data.get('value')
+        if value is None:
+            return jsonify({'status': 'error', 'message': 'Kein Wert übergeben'}), 400
+        try:
+            value = int(value)
+        except ValueError:
+            return jsonify({'status': 'error', 'message': 'Ungültiger Wert'}), 400
+        insert_data_trigger(value)
+        # MQTT senden
+        publish.single("watering/trigger", str(value), hostname="localhost")
+        return jsonify({'status': 'success', 'value': value})
+    else:
+        # GET: letzten Wert auslesen
+        conn = mysql.connector.connect(
+            host='localhost',
+            user='sflask',
+            password='12345678',
+            database='flask_server'
+        )
+        cursor = conn.cursor()
+        cursor.execute("SELECT value FROM trigger_values ORDER BY id DESC LIMIT 1")
+        result = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        if result:
+            return jsonify({'value': result[0]})
+        else:
+            return jsonify({'value': None})

@@ -98,11 +98,37 @@ function refreshPlotD() {
     }
 }
 
+// Trigger-Wert abfragen
+function fetchTrigger() {
+    fetch('/api/trigger')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("trigger-value").textContent = data.value !== null ? data.value : '--';
+        });
+}
+
+// Trigger-Wert setzen
+function setTrigger() {
+    const value = document.getElementById("trigger-input").value;
+    if (!value) return;
+    fetch('/api/trigger', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: value })
+    })
+    .then(response => response.json())
+    .then(data => {
+        fetchTrigger();
+        document.getElementById("trigger-input").value = '';
+    });
+}
+
 // Intiales Laden der Plots und Daten
 document.addEventListener('DOMContentLoaded', function() {
     refreshPlotA();
     refreshPlotD();
     fetchLatestData();
+    fetchTrigger();
 });
 
 // 10 Sekunden Aktualisierung für Plots
@@ -115,3 +141,7 @@ setInterval(fetchLatestData, 500);
 
 // Rufe fetchPumpStatus regelmäßig auf, z.B. alle 0,5 Sekunden:
 setInterval(fetchPumpStatus, 500);
+
+// Trigger-Wert regelmäßig abfragen
+setInterval(fetchTrigger, 1000);
+document.addEventListener('DOMContentLoaded', fetchTrigger);
