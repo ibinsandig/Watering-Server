@@ -61,7 +61,6 @@ def senden(topic, data, typ):
             print(f"Nachricht gesendet: {status_msg}")
         except Exception as e:
             print(f"Fehler beim Senden der Nachricht: {e}")
-        print("^^^^^^^^^^^^^^^^^^^^^^^^")
 
 """Funktion zum Empfangen von Nachrichten über MQTT"""
 def empfangen(topic, msg):
@@ -85,7 +84,6 @@ def empfangen(topic, msg):
             print(f"Neuer Trigger-Wert empfangen: {trigger}")
         except ValueError:
             print("Ungültiger Trigger-Wert empfangen")
-    print("++++++++++++++++++++++++++++++++")
 
 
 """Abgleichen des analogen Sensors mit dem Triggerwert und Ausgabe eines Bools"""
@@ -129,6 +127,5 @@ def run_watering():
             print('Fehler in Hauptschleife:', e)
             time.sleep(5)
             client = None
-        print("-----------------------------")
 client = connect_mqtt()
 run_watering()
