@@ -3,14 +3,24 @@ import time
 import network # type: ignore
 import socket
 
+# Interne LED initialisieren (GPIO2, LOW = AN)
+check_led = machine.Pin(2, machine.Pin.OUT)
+
+# LED blinken lassen während des Verbindens
+for _ in range(10):
+    check_led.off()
+    time.sleep(0.2)
+    check_led.on()
+    time.sleep(0.2)
+
 """Wlan aktivieren"""
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
 
 
 print("Verbinde mit WLAN...")
-ssid = "WehLan"
-password = "1234wlan5678"
+ssid = "Lochbox"
+password = "280874b61133"
 
 """Wlan verbinden"""
 wlan.connect(ssid, password)
