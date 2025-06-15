@@ -32,55 +32,6 @@ MQTT_TOPIC_PUB_PUMP = b'watering/pump'
 MQTT_TOPIC_SUB_PUMP = b'watering/control'
 MQTT_TOPIC_SUB_TRIGGER = b'watering/trigger'
 
-def empfangen(topic, msg):
-    topic = topic.decode()
-    message = msg.decode()
-    if topic == "watering/control":
-        # Pumpensteuerung auswerten
-        pass
-    elif topic == "watering/trigger":
-        # Triggerwert auswerten
-        pass
-
-def connect_mqtt():
-    # ...
-    client.subscribe(MQTT_TOPIC_SUB_PUMP)
-    client.subscribe(MQTT_TOPIC_SUB_TRIGGER)
-    # ...
-
-"""Funktion zum Senden von Nachrichten über MQTT"""
-def senden(topic, data, typ):
-    global client
-    if client:
-        status = f"{typ}:{data}"
-        print(status)
-        status_msg = str(status).encode()
-        try:
-            client.publish(topic, status_msg)
-            print(f"Nachricht gesendet: {status_msg}")
-        except Exception as e:
-            print(f"Fehler beim Senden der Nachricht: {e}")
-
-"""Funktion zum Empfangen von Nachrichten über MQTT"""
-def empfangen(topic, msg):
-    global status_pump, trigger
-    topic = topic.decode()
-    message = msg.decode()
-    print(f"Nachricht empfangen: Topic: {topic}, Nachricht: {message}")
-    if topic == "watering/control":
-        if message == "on":
-            status_pump = 1
-            print("Pumpe eingeschaltet")
-        elif message == "off":
-            status_pump = 0
-            print("Pumpe ausgeschaltet")
-    elif topic == "watering/trigger":
-        try:
-            trigger = int(message)
-            print(f"Neuer Trigger-Wert empfangen: {trigger}")
-        except ValueError:
-            print("Ungültiger Trigger-Wert empfangen")
-
 """Herstellen der MQTT-Verbindung und subscriben des Topics"""
 def connect_mqtt():
     global client
@@ -96,6 +47,47 @@ def connect_mqtt():
         print(f"MQTT-Verbindung fehlgeschlagen: {e}")
         return None
 
+"""Funktion zum Senden von Nachrichten über MQTT"""
+def senden(topic, data, typ):
+    global client
+
+    if client:
+        print("^^^^^^^^^^^^^^^^^^^^^^^^")
+        status = f"{typ}:{data}"
+        print(status)
+        status_msg = str(status).encode()
+        try:
+            client.publish(topic, status_msg)
+            print(f"Nachricht gesendet: {status_msg}")
+        except Exception as e:
+            print(f"Fehler beim Senden der Nachricht: {e}")
+        print("^^^^^^^^^^^^^^^^^^^^^^^^")
+
+"""Funktion zum Empfangen von Nachrichten über MQTT"""
+def empfangen(topic, msg):
+    global status_pump, trigger
+    topic = topic.decode()
+    message = msg.decode()
+    print("++++++++++++++++++++++++++++++++")
+    print(f"Nachricht empfangen: Topic: {topic}, Nachricht: {message}")
+    if topic == "watering/control":
+        if message == "on":
+            pump.value(1)
+            status_pump = 1
+            print("Pumpe eingeschaltet")
+        elif message == "off":
+            pump.value(0)
+            status_pump = 0
+            print("Pumpe ausgeschaltet")
+    elif topic == "watering/trigger":
+        try:
+            trigger = int(message)
+            print(f"Neuer Trigger-Wert empfangen: {trigger}")
+        except ValueError:
+            print("Ungültiger Trigger-Wert empfangen")
+    print("++++++++++++++++++++++++++++++++")
+
+
 """Abgleichen des analogen Sensors mit dem Triggerwert und Ausgabe eines Bools"""
 def auswertung_analog(trigger):
     # umso größer der Wert ist, desto trockener ist die Erde
@@ -109,7 +101,8 @@ def auswertung_analog(trigger):
 def run_watering():
     global client, status_pump
     while True:
-        print("DAS IST DER TRIGGER:", trigger)
+        print("-----------------------------")
+        print("Triggerwert:", trigger)
         try:
             if client:
                 client.check_msg()
