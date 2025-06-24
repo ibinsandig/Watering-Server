@@ -8,28 +8,7 @@ function ZurMainpage(){
     window.location.href = "/";
 }
 
-// Funktion zum Steuern der Pumpe
-function controlPump(turnOn) {
-    const action = turnOn ? 'on' : 'off';
-
-    fetch('/api/pump-control', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ action: action })
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log("Pumpenstatus aktualisiert:", data);
-    })
-    .catch(error => {
-        console.error("Fehler beim Steuern der Pumpe:", error);
-    });
-}
-
 // Funktion zum Laden der letzten Feuchtigkeitsdaten
-/*
 function fetchLatestData() {
     fetch('/api/latest-data')
         .then(response => response.json())
@@ -65,23 +44,6 @@ function fetchLatestData() {
             console.error("Fehler beim Abrufen der Daten:", error);
         });
 }
-
-//Funktion zum Abrufen des letzten Pumpenstatus
-function fetchPumpStatus() {
-    fetch('/api/latest-pump')
-        .then(response => response.json())
-        .then(data => {
-            let status = '--';
-            if (data.payload === "1") status = "EIN";
-            if (data.payload === "0") status = "AUS";
-            document.getElementById("pump-status").textContent = status;
-        })
-        .catch(error => {
-            console.error("Fehler beim Abrufen des Pumpenstatus:", error);
-        });
-}
-
-*/
 
 // Funktion zum Aktualisieren von PlotA und PlotD
 function refreshPlotA() {
