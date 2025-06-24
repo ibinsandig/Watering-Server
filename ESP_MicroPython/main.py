@@ -17,15 +17,15 @@ pump = Pin(5, Pin.OUT)
 """Globale Variablen"""
 #data_analog = sensor_analog.read()
 #data_digital = sensor_digital.value()
-status_pump = 0
+status_pump = None
 trigger = 800
-pump_time = 3
+pump_time = 10  # Zeit in Sekunden, die die Pumpe laufen soll
 pump_time_stop = 3
 
 client = None
 
 """Konfiguration des MQTT-Brokers und der Topics"""
-MQTT_BROKER = "192.168.178.21"
+MQTT_BROKER = "lbraun.nl"
 MQTT_PORT = 1883
 MQTT_TOPIC_PUB_MOISTURE = b'watering/status'
 MQTT_TOPIC_PUB_PUMP = b'watering/pump'
@@ -71,12 +71,10 @@ def empfangen(topic, msg):
     print(f"Nachricht empfangen: Topic: {topic}, Nachricht: {message}")
     if topic == "watering/control":
         if message == "on":
-            pump.value(1)
-            status_pump = 1
+            status_pump = True
             print("Pumpe eingeschaltet")
         elif message == "off":
-            pump.value(0)
-            status_pump = 0
+            status_pump = False
             print("Pumpe ausgeschaltet")
     elif topic == "watering/trigger":
         try:
@@ -107,14 +105,15 @@ def run_watering():
             else:
                 client = connect_mqtt()
             analog_trocken = auswertung_analog(trigger)
-            if status_pump == 1 or analog_trocken:
+            print("STATUS PUMP (((((((())))))))",status_pump)
+            if status_pump == True or analog_trocken:
                 senden(MQTT_TOPIC_PUB_MOISTURE, sensor_digital.value(), "moistureD")
                 time.sleep(1)
                 senden(MQTT_TOPIC_PUB_MOISTURE, sensor_analog.read(), "moistureA")
                 led_green.on()
-                pump.on()
+                pump.value(1)
                 time.sleep(pump_time)
-                pump.off()
+                pump.value(0)
             else:
                 senden(MQTT_TOPIC_PUB_MOISTURE, sensor_digital.value(), "moistureD")
                 time.sleep(1)
