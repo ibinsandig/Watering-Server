@@ -21,23 +21,10 @@ def index():
 def control():
     return render_template('control.html')
 
-"""Route für das Senden von Pumpe (an)/(aus)"""
-@main_routes.route('/api/pump-control', methods=['POST'])
-def pump_control():
-    # sendet auf watering/control
-    data = request.get_json()
-    action = data.get('action')
-    if action not in ['on', 'off']:
-        return jsonify({'status': 'error', 'message': 'Ungültige Aktion'}), 400
-    print(f"Pumpe soll geschaltet werden: {action}")
-    publish.single("watering/control", action, hostname="localhost")
-    return jsonify({'status': 'success', 'action': action})
-
 """Route für das Erhalten der aktuellen MQTT-Daten"""
 @main_routes.route('/get_mqtt_data')
 def get_mqtt_data():
     return jsonify({'data': received_data})
-
 
 """Route für das Abgreifen der letzten Feuchtigkeitsdaten aus der Datenbank"""
 @main_routes.route('/api/latest-data')
@@ -58,25 +45,6 @@ def latest_data():
         return jsonify(result)
     else:
         return jsonify({"topic": "", "payload": "", "timestamp": ""})
-
-"""Route für das Abgreifen der letzten Pumpendaten aus der Datenbank"""
-@main_routes.route('/api/latest-pump')
-def latest_pump():
-    conn = mysql.connector.connect(
-        host='localhost',
-        user='sflask',
-        password='12345678',
-        database='flask_server'
-    )
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT payload FROM pump ORDER BY id DESC LIMIT 1")
-    result = cursor.fetchone()
-    cursor.close()
-    conn.close()
-    if result:
-        return jsonify(result)
-    else:
-        return jsonify({"payload": ""})
 
 """Route für das Plotten der Graphik moistureA"""
 @main_routes.route('/moistureA-plot')

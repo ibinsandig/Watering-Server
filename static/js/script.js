@@ -29,6 +29,7 @@ function controlPump(turnOn) {
 }
 
 // Funktion zum Laden der letzten Feuchtigkeitsdaten
+/*
 function fetchLatestData() {
     fetch('/api/latest-data')
         .then(response => response.json())
@@ -65,7 +66,7 @@ function fetchLatestData() {
         });
 }
 
-//Fuznktion zum Abrufen des letzten Pumpenstatus
+//Funktion zum Abrufen des letzten Pumpenstatus
 function fetchPumpStatus() {
     fetch('/api/latest-pump')
         .then(response => response.json())
@@ -79,6 +80,8 @@ function fetchPumpStatus() {
             console.error("Fehler beim Abrufen des Pumpenstatus:", error);
         });
 }
+
+*/
 
 // Funktion zum Aktualisieren von PlotA und PlotD
 function refreshPlotA() {
