@@ -1,5 +1,9 @@
 console.log("Laden script.js");
 
+let moistureA = '--';
+let moistureD = '--';
+let pump = '--';
+
 // Funktion zum zum Wechseln der Webpage
 function ZumBedienpanel(){
     window.location.href = "/control";
@@ -17,9 +21,7 @@ function fetchLatestData() {
             if (data.topic === "watering/status") {
                 // Beispiel: payload = "moisture:45,pump:on"
                 const parts = data.payload.split(',');
-                let moistureA = '--';
-                let moistureD = '--';
-                let pump = '--';
+                
                 
                 parts.forEach(p => {
                     // Unterstützung für verschiedene Moisture-Typen
