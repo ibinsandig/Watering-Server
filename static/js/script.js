@@ -106,9 +106,6 @@ setInterval(refreshPlotD, 10000);
 // 0,5 Sekunden Aktualisierung für aktuelle Daten
 setInterval(fetchLatestData, 500);
 
-// Rufe fetchPumpStatus regelmäßig auf, z.B. alle 0,5 Sekunden:
-setInterval(fetchPumpStatus, 500);
-
 // Trigger-Wert regelmäßig abfragen
 setInterval(fetchTrigger, 1000);
 document.addEventListener('DOMContentLoaded', fetchTrigger);
