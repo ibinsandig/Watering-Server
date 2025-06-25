@@ -32,7 +32,7 @@ def on_message(client, userdata, msg):
         insert_data_pump(msg.topic, msg.payload.decode())
     socketio.emit('mqtt_message', {
         'topic': msg.topic,
-        'payload': payload
+        'payload': msg.payload
     })
 
 """Verbinden mit dem MQTT-Broker in einer unendlichen Schleife"""
