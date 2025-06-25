@@ -1,4 +1,4 @@
-from machine import Pin, ADC #typing: ignore
+from machine import ADC, Pin
 from umqtt.simple import MQTTClient #typing: ignore
 import time
 
@@ -9,8 +9,20 @@ led_green.off()
 check_led = Pin(2, Pin.OUT)
 check_led.off()  # AN (LOW = AN beim ESP8266)
 
-sensor_analog = ADC(0)
-sensor_digital = Pin(4, Pin.IN)
+class Sensor:
+    """Klasse zum Auslesen von Sensorwerten"""
+    def __init__(self, analog_pin, digital_pin):
+        self.sensor_analog = ADC(analog_pin)
+        self.sensor_digital = Pin(digital_pin, Pin.IN)
+
+    def read_analog(self):
+        return self.sensor_analog.read()
+
+    def read_digital(self):
+        return self.sensor_digital.value()
+
+# Sensor-Objekt erstellen
+sensor = Sensor(0, 4)  # ADC Pin 0 für analog, Pin 4 für digital
 
 pump = Pin(5, Pin.OUT) 
 
@@ -88,7 +100,7 @@ def empfangen(topic, msg):
 def auswertung_analog(trigger):
     # umso größer der Wert ist, desto trockener ist die Erde
     # lampe an feucht genug
-    if sensor_analog.read() > trigger:
+    if sensor.read_analog() > trigger:
         return True
     else:
         return False
@@ -107,17 +119,17 @@ def run_watering():
             analog_trocken = auswertung_analog(trigger)
             print("STATUS PUMP (((((((())))))))",status_pump)
             if status_pump == True or analog_trocken:
-                senden(MQTT_TOPIC_PUB_MOISTURE, sensor_digital.value(), "moistureD")
+                senden(MQTT_TOPIC_PUB_MOISTURE, sensor.read_digital(), "moistureD")
                 time.sleep(1)
-                senden(MQTT_TOPIC_PUB_MOISTURE, sensor_analog.read(), "moistureA")
+                senden(MQTT_TOPIC_PUB_MOISTURE, sensor.read_analog(), "moistureA")
                 led_green.on()
                 pump.value(1)
                 time.sleep(pump_time)
                 pump.value(0)
             else:
-                senden(MQTT_TOPIC_PUB_MOISTURE, sensor_digital.value(), "moistureD")
+                senden(MQTT_TOPIC_PUB_MOISTURE, sensor.read_digital(), "moistureD")
                 time.sleep(1)
-                senden(MQTT_TOPIC_PUB_MOISTURE, sensor_analog.read(), "moistureA")
+                senden(MQTT_TOPIC_PUB_MOISTURE, sensor.read_analog(), "moistureA")
                 led_green.off()
             # Pumpenstatus separat senden
             senden(MQTT_TOPIC_PUB_PUMP, status_pump, "pump")
